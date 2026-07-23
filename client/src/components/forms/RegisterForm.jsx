@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Store, UtensilsCrossed } from "lucide-react";
 
-import Input from "../ui/Input";
-import Button from "../ui/Button";
+import Input from "../common/Input";
+import Button from "../common/Button";
 import SelectableCard from "../ui/SelectableCard";
 
 //used for rrouting from frontend to backend , and also to provide the authorization contex register/login

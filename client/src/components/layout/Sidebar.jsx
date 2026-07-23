@@ -36,7 +36,7 @@ const Sidebar = () => {
         <aside className="flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
 
             <div className="border-b border-slate-200 p-6">
-                <BrandLogo />
+                <h1 className="text-2xl font-bold">ProcureFlow</h1>
             </div>
 
             <nav className="flex-1 space-y-2 p-4">
