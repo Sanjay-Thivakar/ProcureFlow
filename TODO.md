@@ -14,8 +14,8 @@
 - [x] Register Page UI
 - [x] Login API Integration
 - [x] Register API Integration
-- [ ] Protected Routes
-- [ ] Logout
+- [x] Protected Routes
+- [x] Logout
 - [x] Persistent Login
 
 ## Backend
