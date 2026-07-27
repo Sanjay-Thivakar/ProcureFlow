@@ -1,8 +1,10 @@
-import DashboardLayout from "../../components/layout/DashboardLayout";
+import DashboardLayout from "../../components/layout/supplier/SupplierLayout";
 
 import DashboardStats from "../../components/dashboard/DashboardStats";
 import QuickActions from "../../components/dashboard/QuickActions";
 import RecentActivity from "../../components/dashboard/RecentActivity";
+
+
 
 const Dashboard = () => {
     return (

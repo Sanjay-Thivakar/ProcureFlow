@@ -1,11 +1,18 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import { useAuth } from "../context/AuthContext";
+
+import RestaurantDashboard from "../pages/restaurant/Dashboard";
+import SupplierDashboard from "../pages/supplier/Dashboard";
 
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
-import Dashboard from "../pages/restaurant/Dashboard"
+
+import Products from "../pages/supplier/Products";
 
 const AppRoutes = () => {
+    const { user } = useAuth();
+
     return (
         <BrowserRouter>
             <Routes>
@@ -16,7 +23,20 @@ const AppRoutes = () => {
                     path="/dashboard"
                     element={
                         <ProtectedRoute>
-                            <Dashboard />
+                            {user?.role === "supplier" ? (
+                                <SupplierDashboard />
+                            ) : (
+                                <RestaurantDashboard />
+                            )}
+                        </ProtectedRoute>
+                    }
+                />
+                
+                <Route
+                    path="/products"
+                    element={
+                        <ProtectedRoute>
+                            <Products />
                         </ProtectedRoute>
                     }
                 />

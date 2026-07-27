@@ -3,15 +3,15 @@ const Product = require("../models/product.model");
 const createProduct = async (req, res) => {
   try {
 
-    if (req.user.role !== "seller") {
+    if (req.user.role !== "supplier") {
       return res.status(403).json({
         success: false,
-        message: "Only sellers can create products."
+        message: "Only suppliers can create products."
       });
     }
 
     const product = await Product.create({
-      seller: req.user.id,
+      supplier: req.user.id,
       ...req.body,
     });
 
@@ -21,6 +21,7 @@ const createProduct = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Create Product error : ", error);
 
     res.status(500).json({
       success: false,
@@ -32,8 +33,8 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
 
-    const products = await Product.find()
-        .populate("seller", "name email");
+    const products = await Product.find({supplier: req.user.id})
+        .populate("supplier", "name email");
 
     res.json(products);
 };
@@ -45,7 +46,7 @@ const getProductById = async (req, res) => {
     try {
 
         const product = await Product.findById(req.params.id)
-            .populate("seller", "name email");
+            .populate("supplier", "name email");
 
         if (!product) {
             return res.status(404).json({
@@ -82,7 +83,7 @@ const updateProduct = async (req, res) => {
             });
         }
 
-        if (product.seller.toString() !== req.user.id) {
+        if (product.supplier.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: "Unauthorized"
@@ -127,7 +128,7 @@ const deleteProduct = async (req, res) => {
             });
         }
 
-        if (product.seller.toString() !== req.user.id) {
+        if (product.supplier.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: "Unauthorized"

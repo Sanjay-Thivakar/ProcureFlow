@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-    seller: {
+    supplier: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
     unit: {
       type: String,
       required: true,
-      enum: ["kg", "litre", "piece", "box", "packet"],
+      enum: ["kg","g","L", "Piece","mL", "Box", "Pack","Dozen"],
     },
 
     price: {

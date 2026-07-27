@@ -1,15 +1,15 @@
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+import SupplierSidebar from "./SupplierSidebar";
+import SupplierHeader from "./SupplierHeader";
 
-const DashboardLayout = ({ children }) => {
+const SupplierLayout = ({ children }) => {
     return (
         <div className="flex min-h-screen bg-slate-100">
 
-            <Sidebar />
+            <SupplierSidebar />
 
             <div className="flex flex-1 flex-col">
 
-                <Header />
+                <SupplierHeader />
 
                 <main className="flex-1 p-8">
                     {children}
@@ -21,4 +21,4 @@ const DashboardLayout = ({ children }) => {
     );
 };
 
-export default DashboardLayout;
+export default SupplierLayout;

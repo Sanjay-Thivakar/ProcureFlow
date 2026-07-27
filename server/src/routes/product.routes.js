@@ -14,9 +14,9 @@ const {
 
 router.post("/", protect, createProduct);
 
-router.get("/", getAllProducts);
+router.get("/",protect, getAllProducts);
 
-router.get("/:id", getProductById);
+router.get("/:id",protect, getProductById);
 
 router.put("/:id", protect, updateProduct);
 

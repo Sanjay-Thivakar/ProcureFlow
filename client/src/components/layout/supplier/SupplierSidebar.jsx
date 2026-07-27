@@ -6,7 +6,7 @@ import {
     User,
 } from "lucide-react";
 
-import BrandLogo from "../common/BrandLogo";
+import BrandLogo from "../../common/BrandLogo";
 
 const Sidebar = () => {
     const navItems = [

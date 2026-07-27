@@ -26,7 +26,7 @@ const createQuotation = async (req, res) => {
 
         const quotation = await Quotation.create({
             buyer: req.user.id,
-            seller: product.seller,
+            supplier: product.supplier,
             product: product._id,
             quantity,
             message,
@@ -48,18 +48,18 @@ const createQuotation = async (req, res) => {
     }
 };
 
-const getSellerQuotations = async (req, res) => {
+const getSupplierQuotations = async (req, res) => {
     try {
 
-        if (req.user.role !== "seller") {
+        if (req.user.role !== "supplier") {
             return res.status(403).json({
                 success: false,
-                message: "Only sellers can view quotations."
+                message: "Only suppliers can view quotations."
             });
         }
 
         const quotations = await Quotation.find({
-            seller: req.user.id
+            supplier: req.user.id
         })
         .populate("buyer", "name email")
         .populate("product", "name category unit");
@@ -81,10 +81,10 @@ const getSellerQuotations = async (req, res) => {
 const respondToQuotation = async (req, res) => {
     try {
 
-        if (req.user.role !== "seller") {
+        if (req.user.role !== "supplier") {
             return res.status(403).json({
                 success: false,
-                message: "Only sellers can respond to quotations."
+                message: "Only suppliers can respond to quotations."
             });
         }
 
@@ -97,8 +97,8 @@ const respondToQuotation = async (req, res) => {
             });
         }
 
-        // Ensure the logged-in seller owns this quotation
-        if (quotation.seller.toString() !== req.user.id) {
+        // Ensure the logged-in supplier owns this quotation
+        if (quotation.supplier.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: "Not authorized."
@@ -117,13 +117,13 @@ const respondToQuotation = async (req, res) => {
             quotedPrice,
             discountPercentage,
             estimatedDelivery,
-            sellerNote
+            supplierNote
         } = req.body;
 
         quotation.quotedPrice = quotedPrice;
         quotation.discountPercentage = discountPercentage;
         quotation.estimatedDelivery = estimatedDelivery;
-        quotation.sellerNote = sellerNote;
+        quotation.supplierNote = supplierNote;
 
         // Quote expires after 2 days
         quotation.validUntil = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
@@ -276,7 +276,7 @@ const getBuyerQuotations = async (req, res) => {
         const quotations = await Quotation.find({
             buyer: req.user.id
         })
-        .populate("seller", "name email")
+        .populate("supplier", "name email")
         .populate("product", "name category unit");
 
         res.status(200).json({
@@ -297,7 +297,7 @@ const getBuyerQuotations = async (req, res) => {
 
 module.exports = {
     createQuotation,
-    getSellerQuotations,
+    getSupplierQuotations,
     respondToQuotation,
     acceptQuotation,
     rejectQuotation,

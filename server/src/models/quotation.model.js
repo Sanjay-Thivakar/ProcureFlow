@@ -8,7 +8,7 @@ const quotationSchema = new mongoose.Schema(
       required: true,
     },
 
-    seller: {
+    supplier: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -63,7 +63,7 @@ const quotationSchema = new mongoose.Schema(
       type: String,
     },
 
-    sellerNote: {
+    supplierNote: {
       type: String,
     },
 
