@@ -5,10 +5,10 @@ const createQuotation = async (req, res) => {
     try {
 
         // Only buyers can request quotations
-        if (req.user.role !== "buyer") {
+        if (req.user.role !== "restaurant") {
             return res.status(403).json({
                 success: false,
-                message: "Only buyers can request quotations."
+                message: "Only restaurants can request quotations."
             });
         }
 
@@ -24,8 +24,15 @@ const createQuotation = async (req, res) => {
             });
         }
 
+        if (!productId || !quantity || !requiredBy) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all required fields."
+            });
+        }
+
         const quotation = await Quotation.create({
-            buyer: req.user.id,
+            restaurant: req.user.id,
             supplier: product.supplier,
             product: product._id,
             quantity,
@@ -61,7 +68,7 @@ const getSupplierQuotations = async (req, res) => {
         const quotations = await Quotation.find({
             supplier: req.user.id
         })
-        .populate("buyer", "name email")
+        .populate("restaurant", "name email")
         .populate("product", "name category unit");
 
         res.status(200).json({
@@ -112,6 +119,13 @@ const respondToQuotation = async (req, res) => {
             });
         }
 
+        if (!quotedPrice || quotedPrice <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Quoted price must be greater than zero."
+            });
+        }
+
 
         const {
             quotedPrice,
@@ -150,10 +164,10 @@ const respondToQuotation = async (req, res) => {
 const acceptQuotation = async (req, res) => {
     try {
 
-        if (req.user.role !== "buyer") {
+        if (req.user.role !== "restaurant") {
             return res.status(403).json({
                 success: false,
-                message: "Only buyers can accept quotations."
+                message: "Only restaurants can accept quotations."
             });
         }
 
@@ -166,7 +180,7 @@ const acceptQuotation = async (req, res) => {
             });
         }
 
-        if (quotation.buyer.toString() !== req.user.id) {
+        if (quotation.restaurant.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: "Not authorized."
@@ -213,10 +227,10 @@ const acceptQuotation = async (req, res) => {
 const rejectQuotation = async (req, res) => {
     try {
 
-        if (req.user.role !== "buyer") {
+        if (req.user.role !== "restaurant") {
             return res.status(403).json({
                 success: false,
-                message: "Only buyers can reject quotations."
+                message: "Only restaurants can reject quotations."
             });
         }
 
@@ -229,7 +243,7 @@ const rejectQuotation = async (req, res) => {
             });
         }
 
-        if (quotation.buyer.toString() !== req.user.id) {
+        if (quotation.restaurant.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: "Not authorized."
@@ -263,18 +277,18 @@ const rejectQuotation = async (req, res) => {
     }
 };
 
-const getBuyerQuotations = async (req, res) => {
+const getRestaurantQuotations = async (req, res) => {
     try {
 
-        if (req.user.role !== "buyer") {
+        if (req.user.role !== "restaurant") {
             return res.status(403).json({
                 success: false,
-                message: "Only buyers can view their quotations."
+                message: "Only restaurants can view their quotations."
             });
         }
 
         const quotations = await Quotation.find({
-            buyer: req.user.id
+            restaurant: req.user.id
         })
         .populate("supplier", "name email")
         .populate("product", "name category unit");
@@ -301,5 +315,5 @@ module.exports = {
     respondToQuotation,
     acceptQuotation,
     rejectQuotation,
-    getBuyerQuotations,
+    getRestaurantQuotations,
 };

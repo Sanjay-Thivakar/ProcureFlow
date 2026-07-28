@@ -9,7 +9,7 @@ import DeleteModal from "../../components/products/DeleteModal";
 
 
 import {
-    getProducts,
+    getMyProducts,
     createProduct,
     updateProduct,
     deleteProduct,
@@ -46,9 +46,9 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
-            const data = await getProducts();
+            const response = await getMyProducts();
 
-            setProducts(data);
+            setProducts(response.products);
         } catch (error) {
             console.error("Failed to fetch products", error);
         } finally {

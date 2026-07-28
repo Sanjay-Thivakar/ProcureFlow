@@ -9,6 +9,9 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
 import Products from "../pages/supplier/Products";
+import BrowseProducts from '../pages/restaurant/BrowseProducts'
+
+import MyQuotation from "../pages/restaurant/MyQuotations";
 
 const AppRoutes = () => {
     const { user } = useAuth();
@@ -40,6 +43,26 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     }
                 />
+
+                <Route
+                    path="/restaurant/products"
+                    element={
+                    <ProtectedRoute>
+                        <BrowseProducts />
+                    </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/restaurant/quotations"
+                    element={
+                        <ProtectedRoute allowedRoles={["restaurant"]}>
+                            <MyQuotation />
+                        </ProtectedRoute>
+                    }
+                />
+
+
             </Routes>
         </BrowserRouter>
     );

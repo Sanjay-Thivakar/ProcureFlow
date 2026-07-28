@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const quotationSchema = new mongoose.Schema(
   {
-    buyer: {
+    restaurant : {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -60,11 +60,13 @@ const quotationSchema = new mongoose.Schema(
     },
 
     estimatedDelivery: {
-      type: String,
+      type: Date,
     },
 
     supplierNote: {
       type: String,
+      trim: true,
+      default: "",
     },
 
     validUntil: {

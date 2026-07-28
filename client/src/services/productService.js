@@ -1,8 +1,14 @@
 import api from "./api";
 
-// Get all products
+// Restaurant - Browse all supplier products
 export const getProducts = async () => {
     const response = await api.get("/products");
+    return response.data;
+};
+
+// Supplier - View only my own products
+export const getMyProducts = async () => {
+    const response = await api.get("/products/my-products");
     return response.data;
 };
 

@@ -31,15 +31,43 @@ const createProduct = async (req, res) => {
   }
 };
 
-const getAllProducts = async (req, res) => {
 
-    const products = await Product.find({supplier: req.user.id})
-        .populate("supplier", "name email");
-
-    res.json(products);
-};
 
 //getting aproduct by its product id
+
+const getMyProducts = async (req, res) => {
+    const products = await Product.find({
+        supplier: req.user.id
+    }).populate("supplier", "name email");
+
+    res.status(200).json({
+        success: true,
+        products,
+    });
+};
+
+const browseProducts = async (req, res) => {
+    try {
+
+        const products = await Product.find()
+            .populate("supplier", "name email");
+
+        res.status(200).json({
+            success: true,
+            products,
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+
+    }
+};
 
 
 const getProductById = async (req, res) => {
@@ -155,7 +183,8 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
     createProduct,
-    getAllProducts,
+    getMyProducts,
+    browseProducts,
     getProductById,
     updateProduct,
     deleteProduct,

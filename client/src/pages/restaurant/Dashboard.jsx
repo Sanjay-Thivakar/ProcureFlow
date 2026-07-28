@@ -1,4 +1,4 @@
-import DashboardLayout from "../../components/layout/supplier/SupplierLayout";
+import DashboardLayout from "../../components/layout/restaurant/RestaurantLayout";
 
 import DashboardStats from "../../components/dashboard/DashboardStats";
 import QuickActions from "../../components/dashboard/QuickActions";
