@@ -35,6 +35,10 @@ const createQuotation = async (req, res) => {
             restaurant: req.user.id,
             supplier: product.supplier,
             product: product._id,
+             // Snapshot fields
+            productName: product.name,
+            unit: product.unit,
+            listedPrice: product.price,
             quantity,
             message,
             requiredBy,
@@ -104,14 +108,13 @@ const respondToQuotation = async (req, res) => {
             });
         }
 
-        // Ensure the logged-in supplier owns this quotation
         if (quotation.supplier.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: "Not authorized."
             });
         }
-        
+
         if (quotation.status !== "pending") {
             return res.status(400).json({
                 success: false,
@@ -119,6 +122,15 @@ const respondToQuotation = async (req, res) => {
             });
         }
 
+        // ✅ Extract request body FIRST
+        const {
+            quotedPrice,
+            discountPercentage,
+            estimatedDelivery,
+            supplierNote,
+        } = req.body;
+
+        // Then validate
         if (!quotedPrice || quotedPrice <= 0) {
             return res.status(400).json({
                 success: false,
@@ -126,21 +138,33 @@ const respondToQuotation = async (req, res) => {
             });
         }
 
-
-        const {
-            quotedPrice,
-            discountPercentage,
-            estimatedDelivery,
-            supplierNote
-        } = req.body;
-
         quotation.quotedPrice = quotedPrice;
         quotation.discountPercentage = discountPercentage;
         quotation.estimatedDelivery = estimatedDelivery;
         quotation.supplierNote = supplierNote;
 
-        // Quote expires after 2 days
-        quotation.validUntil = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+        
+
+        if (
+            discountPercentage &&
+            (discountPercentage < 0 || discountPercentage > 100)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Discount must be between 0 and 100."
+            });
+        }
+
+        if (!estimatedDelivery) {
+            return res.status(400).json({
+                success: false,
+                message: "Estimated delivery date is required."
+            });
+        }
+
+        quotation.validUntil = new Date(
+            Date.now() + 2 * 24 * 60 * 60 * 1000
+        );
 
         quotation.status = "quoted";
 
@@ -148,14 +172,14 @@ const respondToQuotation = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            quotation
+            quotation,
         });
 
     } catch (error) {
 
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
 
     }
@@ -208,6 +232,24 @@ const acceptQuotation = async (req, res) => {
 
         await quotation.save();
 
+        await quotation.updateMany(
+            {
+                _id: { $ne: quotation._id },
+
+                restaurant: quotation.restaurant,
+
+                product: quotation.product,
+
+                status: "quoted",
+            },
+            {
+                $set: {
+                    status: "rejected",
+                },
+            }
+        );
+
+
         res.status(200).json({
             success: true,
             message: "Quotation accepted successfully.",
@@ -254,6 +296,16 @@ const rejectQuotation = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "Quotation cannot be rejected."
+            });
+        }
+
+        if (quotation.validUntil && quotation.validUntil < new Date()) {
+            quotation.status = "expired";
+            await quotation.save();
+
+            return res.status(400).json({
+                success: false,
+                message: "Quotation has expired."
             });
         }
 

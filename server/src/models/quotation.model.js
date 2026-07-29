@@ -20,6 +20,24 @@ const quotationSchema = new mongoose.Schema(
       required: true,
     },
 
+    productName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    unit: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    listedPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
     quantity: {
       type: Number,
       required: true,
@@ -42,6 +60,7 @@ const quotationSchema = new mongoose.Schema(
       enum: [
         "pending",
         "quoted",
+        "declined",
         "accepted",
         "rejected",
         "expired"

@@ -22,7 +22,7 @@ const Sidebar = () => {
         },
         {
             name: "Quotations",
-            path: "/quotations",
+            path: "/supplier/quotations",
             icon: FileText,
         },
         {

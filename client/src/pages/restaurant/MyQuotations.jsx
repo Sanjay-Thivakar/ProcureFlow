@@ -65,6 +65,7 @@ const MyQuotation = () => {
                             <QuotationCard
                                 key={quotation._id}
                                 quotation={quotation}
+                                onSuccess={fetchQuotations}
                             />
 
                         ))}

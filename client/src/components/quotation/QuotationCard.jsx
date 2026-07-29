@@ -1,6 +1,14 @@
 import React from "react";
 
-const QuotationCard = ({ quotation }) => {
+import {
+    acceptQuotation,
+    rejectQuotation,
+} from "../../services/quotationService";
+
+import toast from "react-hot-toast";
+
+
+const QuotationCard = ({ quotation,onSuccess }) => {
 
     const getStatusStyles = (status) => {
         switch (status) {
@@ -21,8 +29,54 @@ const QuotationCard = ({ quotation }) => {
         }
     };
 
+    const handleAccept = async () => {
+
+        try {
+
+            await acceptQuotation(quotation._id);
+
+            toast.success("Quotation accepted successfully.");
+
+            if (onSuccess) {
+                await onSuccess();
+            }
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to accept quotation."
+            );
+
+        }
+
+    };
+
+    const handleReject = async () => {
+
+        try {
+
+            await rejectQuotation(quotation._id);
+
+            toast.success("Quotation rejected successfully.");
+
+            if (onSuccess) {
+                await onSuccess();
+            }
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to reject quotation."
+            );
+
+        }
+
+    };
+
     return (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col h-full">
 
             {/* Header */}
             <div className="flex justify-between items-start mb-6">
@@ -118,7 +172,7 @@ const QuotationCard = ({ quotation }) => {
             {/* Supplier Response (Future Ready) */}
             {quotation.status !== "pending" && (
 
-                <div className="mt-6 border-t pt-5">
+                <div className="mt-6 border-t pt-5 flex flex-col flex-1">
 
                     {quotation.quotedPrice && (
                         <div className="flex justify-between mb-3">
@@ -151,7 +205,7 @@ const QuotationCard = ({ quotation }) => {
                             </span>
 
                             <span className="font-semibold">
-                                {quotation.estimatedDelivery}
+                                {new Date(quotation.estimatedDelivery).toLocaleDateString()}
                             </span>
                         </div>
                     )}
@@ -172,6 +226,29 @@ const QuotationCard = ({ quotation }) => {
                             </div>
 
                         </div>
+                    )}
+
+                    {/* Restaurant Actions */}
+                    {quotation.status === "quoted" && (
+
+                        <div className="mt-auto pt-6 flex gap-3">
+
+                            <button
+                                onClick={handleAccept}
+                                className="flex-1 bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                            >
+                                Accept Quote
+                            </button>
+
+                            <button
+                                onClick={handleReject}
+                                className="flex-1 bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                            >
+                                Reject Quote
+                            </button>
+
+                        </div>
+
                     )}
 
                 </div>

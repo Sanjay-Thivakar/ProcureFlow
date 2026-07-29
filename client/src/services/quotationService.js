@@ -1,5 +1,6 @@
 import api from "./api";
 
+
 // Create a new quotation request (Restaurant)
 export const createQuotation = async (quotationData) => {
     const response = await api.post("/quotations", quotationData);
