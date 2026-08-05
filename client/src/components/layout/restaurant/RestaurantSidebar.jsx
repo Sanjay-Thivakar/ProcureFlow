@@ -21,7 +21,7 @@ const RestaurantSidebar = () => {
         },
         {
             name: "My Quotations",
-            path: "/restaurant/quotations",
+            path: "/restaurant/rfqs",
             icon: FileText,
         },
         {

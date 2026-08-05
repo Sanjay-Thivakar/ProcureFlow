@@ -88,6 +88,12 @@ const quotationSchema = new mongoose.Schema(
       default: "",
     },
 
+    rfq: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RFQ",
+      required: true,
+    },
+
     validUntil: {
       type: Date,
     },

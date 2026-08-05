@@ -1,62 +1,157 @@
+const RFQ = require("../models/rfq.model"); 
 const Quotation = require("../models/quotation.model");
 const Product = require("../models/product.model");
+const mongoose = require("mongoose");
 
-const createQuotation = async (req, res) => {
+const createRFQ = async (req, res) => {
+
     try {
 
-        // Only buyers can request quotations
+        // Only restaurants can create RFQs
         if (req.user.role !== "restaurant") {
+
             return res.status(403).json({
                 success: false,
-                message: "Only restaurants can request quotations."
+                message: "Only restaurants can create RFQs."
             });
+
         }
 
-        const { productId, quantity, message, requiredBy } = req.body;
+        const {
+            productListings,
+            quantity,
+            message,
+            requiredBy,
+        } = req.body;
 
-        // Check if the product exists
-        const product = await Product.findById(productId);
-
-        if (!product) {
-            return res.status(404).json({
-                success: false,
-                message: "Product not found."
-            });
-        }
-
-        if (!productId || !quantity || !requiredBy) {
+        if (
+            !productListings ||
+            !Array.isArray(productListings) ||
+            productListings.length === 0 ||
+            !quantity ||
+            !requiredBy
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "Please provide all required fields."
             });
+
         }
 
-        const quotation = await Quotation.create({
-            restaurant: req.user.id,
-            supplier: product.supplier,
-            product: product._id,
-             // Snapshot fields
-            productName: product.name,
-            unit: product.unit,
-            listedPrice: product.price,
-            quantity,
-            message,
-            requiredBy,
+        // Fetch selected products
+        const selectedProducts = await Product.find({
+            _id: { $in: productListings }
         });
 
-        res.status(201).json({
+        if (selectedProducts.length !== productListings.length) {
+
+            return res.status(404).json({
+                success: false,
+                message: "One or more selected products were not found."
+            });
+
+        }
+
+        const firstProduct = selectedProducts[0];
+
+        const normalizeProductName = (name) =>
+            name.trim().toLowerCase();
+
+        const normalizedName = normalizeProductName(firstProduct.name);
+
+        const allSameProduct = selectedProducts.every(product =>
+            normalizeProductName(product.name) === normalizedName &&
+            product.unit === firstProduct.unit
+        );
+
+        if (!allSameProduct) {
+
+            return res.status(400).json({
+                success: false,
+                message: "All selected products must represent the same item."
+            });
+
+        }
+
+        const rfq = new RFQ({
+
+            restaurant: req.user.id,
+
+            productListings,
+
+            productName: firstProduct.name,
+
+            unit: firstProduct.unit,
+
+            quantity,
+
+            requiredBy,
+
+            message,
+
+        });
+
+        await rfq.save();
+
+        for (const product of selectedProducts) {
+
+            console.log("--------------------------------");
+            console.log("Creating quotation for:");
+            console.log(product.name);
+            console.log(product._id);
+
+            const quotation = new Quotation({
+
+                rfq: rfq._id,
+
+                restaurant: req.user.id,
+
+                supplier: product.supplier,
+
+                product: product._id,
+
+                productName: product.name,
+
+                unit: product.unit,
+
+                listedPrice: product.price,
+
+                quantity,
+
+                requiredBy,
+
+                message,
+
+            });
+
+            await quotation.save();
+
+           
+
+        }
+
+        return res.status(201).json({
+
             success: true,
-            quotation
+
+            message: "RFQ created successfully.",
+
+            rfq,
+
         });
 
     } catch (error) {
 
-        res.status(500).json({
+        return res.status(500).json({
+
             success: false,
-            message: error.message
+
+            message: error.message,
+
         });
 
     }
+
 };
 
 const getSupplierQuotations = async (req, res) => {
@@ -219,7 +314,9 @@ const acceptQuotation = async (req, res) => {
         }
 
         if (quotation.validUntil && quotation.validUntil < new Date()) {
+
             quotation.status = "expired";
+
             await quotation.save();
 
             return res.status(400).json({
@@ -228,18 +325,16 @@ const acceptQuotation = async (req, res) => {
             });
         }
 
+        // Accept selected quotation
         quotation.status = "accepted";
 
         await quotation.save();
 
-        await quotation.updateMany(
+        // Reject all other quotations for this RFQ
+        await Quotation.updateMany(
             {
+                rfq: quotation.rfq,
                 _id: { $ne: quotation._id },
-
-                restaurant: quotation.restaurant,
-
-                product: quotation.product,
-
                 status: "quoted",
             },
             {
@@ -249,18 +344,25 @@ const acceptQuotation = async (req, res) => {
             }
         );
 
+        // Mark RFQ as completed
+        await RFQ.findByIdAndUpdate(
+            quotation.rfq,
+            {
+                status: "completed",
+            }
+        );
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Quotation accepted successfully.",
-            quotation
+            quotation,
         });
 
     } catch (error) {
 
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
 
     }
@@ -362,7 +464,7 @@ const getRestaurantQuotations = async (req, res) => {
 };
 
 module.exports = {
-    createQuotation,
+    createRFQ,
     getSupplierQuotations,
     respondToQuotation,
     acceptQuotation,

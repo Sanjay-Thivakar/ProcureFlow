@@ -2,21 +2,25 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import RestaurantLayout from "../../components/layout/restaurant/RestaurantLayout";
-import QuotationCard from "../../components/quotation/QuotationCard";
+import RFQDetailsModal from "../../components/rfq/RFQDetailsModal";
 
-import { getRestaurantQuotations } from "../../services/quotationService";
+import { getRestaurantRFQs } from "../../services/rfqService";
 
 const MyQuotation = () => {
 
-    const [quotations, setQuotations] = useState([]);
+    const [rfqs, setRFQs] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchQuotations = async () => {
+    const [selectedRFQ, setSelectedRFQ] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+    const fetchRFQs = async () => {
         try {
 
-            const response = await getRestaurantQuotations();
+            const response = await getRestaurantRFQs();
 
-            setQuotations(response.quotations);
+            setRFQs(response.rfqs);
 
         } catch (error) {
 
@@ -32,7 +36,7 @@ const MyQuotation = () => {
     };
 
     useEffect(() => {
-        fetchQuotations();
+        fetchRFQs();
     }, []);
 
     return (
@@ -41,7 +45,7 @@ const MyQuotation = () => {
             <div className="p-6">
 
                 <h1 className="text-3xl font-bold mb-6">
-                    My Quotations
+                    My RFQs
                 </h1>
 
                 {loading ? (
@@ -50,23 +54,65 @@ const MyQuotation = () => {
                         Loading quotations...
                     </div>
 
-                ) : quotations.length === 0 ? (
+                ) : rfqs.length === 0 ? (
 
                     <div className="text-center text-gray-500">
-                        You haven't requested any quotations yet.
+                        You haven't created any RFQs yet...
                     </div>
 
                 ) : (
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                        {quotations.map((quotation) => (
+                        {rfqs.map((rfq) => (
 
-                            <QuotationCard
-                                key={quotation._id}
-                                quotation={quotation}
-                                onSuccess={fetchQuotations}
-                            />
+                            <div
+                                key={rfq._id}
+                                className="bg-white rounded-xl border border-gray-200 shadow-sm p-6"
+                            >
+
+                                <h2 className="text-2xl font-bold">
+                                    {rfq.productName}
+                                </h2>
+
+                                <p className="mt-2 text-gray-600">
+                                    Quantity : {rfq.quantity} {rfq.unit}
+                                </p>
+
+                                <p className="text-gray-600">
+                                    Required By : {new Date(rfq.requiredBy).toLocaleDateString()}
+                                </p>
+
+                                <p className="text-gray-600">
+                                    Suppliers Invited : {rfq.quotations.length}
+                                </p>
+
+                                <p className="text-gray-600">
+                                    Responses Received : {
+                                        rfq.quotations.filter(
+                                            quotation => quotation.status !== "pending"
+                                        ).length
+                                    } / {rfq.quotations.length}
+                                </p>
+
+                                <button
+
+                                    onClick={() => {
+
+                                        setSelectedRFQ(rfq);
+
+                                        setIsModalOpen(true);
+
+                                    }}
+
+                                    className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
+
+                                >
+
+                                    View Responses
+
+                                </button>
+                            </div>
 
                         ))}
 
@@ -75,6 +121,24 @@ const MyQuotation = () => {
                 )}
 
             </div>
+
+            <RFQDetailsModal
+
+                isOpen={isModalOpen}
+
+                rfq={selectedRFQ}
+
+                onClose={() => {
+
+                    setSelectedRFQ(null);
+
+                    setIsModalOpen(false);
+
+                }}
+
+                onSuccess={fetchRFQs}
+
+            />
 
         </RestaurantLayout>
     );

@@ -10,9 +10,36 @@ const createProduct = async (req, res) => {
       });
     }
 
+    const {
+        name,
+        category,
+        unit,
+        price,
+        stock,
+    } = req.body;
+
+    const formattedName =
+        name.trim().charAt(0).toUpperCase() +
+        name.trim().slice(1).toLowerCase();
+
+    const formattedCategory =
+        category.trim().charAt(0).toUpperCase() +
+        category.trim().slice(1).toLowerCase();
+
     const product = await Product.create({
-      supplier: req.user.id,
-      ...req.body,
+
+        supplier: req.user.id,
+
+        name: formattedName,
+
+        category: formattedCategory,
+
+        unit,
+
+        price,
+
+        stock,
+
     });
 
     res.status(201).json({

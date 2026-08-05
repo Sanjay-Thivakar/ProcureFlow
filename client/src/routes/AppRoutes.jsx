@@ -55,7 +55,7 @@ const AppRoutes = () => {
                 />
 
                 <Route
-                    path="/restaurant/quotations"
+                    path="/restaurant/rfqs"
                     element={
                         <ProtectedRoute allowedRoles={["restaurant"]}>
                             <MyQuotation />

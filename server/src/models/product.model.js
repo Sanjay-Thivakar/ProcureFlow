@@ -9,9 +9,12 @@ const productSchema = new mongoose.Schema(
     },
 
     name: {
-      type: String,
-      required: true,
-      trim: true,
+        type: String,
+        required: true,
+        trim: true,
+        set: value =>
+            value.trim().charAt(0).toUpperCase() +
+            value.trim().slice(1).toLowerCase(),
     },
 
     category: {
