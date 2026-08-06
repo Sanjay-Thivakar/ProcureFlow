@@ -18,11 +18,17 @@ const QuotationCard = ({ quotation,onSuccess }) => {
             case "quoted":
                 return "bg-blue-100 text-blue-700";
 
-            case "accepted":
+            case "awarded":
                 return "bg-green-100 text-green-700";
 
             case "rejected":
                 return "bg-red-100 text-red-700";
+
+            case "declined":
+                return "bg-gray-100 text-gray-700";
+
+            case "expired":
+                return "bg-orange-100 text-orange-700";
 
             default:
                 return "bg-gray-100 text-gray-700";
@@ -237,7 +243,7 @@ const QuotationCard = ({ quotation,onSuccess }) => {
                                 onClick={handleAccept}
                                 className="flex-1 bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
                             >
-                                Accept Quote
+                                Award Supplier
                             </button>
 
                             <button

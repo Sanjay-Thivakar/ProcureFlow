@@ -60,11 +60,11 @@ const quotationSchema = new mongoose.Schema(
       enum: [
         "pending",
         "quoted",
+        "awarded",
         "declined",
-        "accepted",
         "rejected",
         "expired"
-      ],
+    ],
       default: "pending",
     },
 

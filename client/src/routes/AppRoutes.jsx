@@ -14,6 +14,9 @@ import BrowseProducts from '../pages/restaurant/BrowseProducts'
 import MyQuotation from "../pages/restaurant/MyQuotations";
 import SupplierQuotations from "../pages/supplier/SupplierQuotations";
 
+import SupplierOrders from "../pages/supplier/MyOrders";
+import RestaurantOrders from "../pages/restaurant/MyOrders";
+
 const AppRoutes = () => {
     const { user } = useAuth();
 
@@ -70,6 +73,16 @@ const AppRoutes = () => {
                             <SupplierQuotations />
                         </ProtectedRoute>
                     }
+                />
+
+                <Route
+                    path="/supplier/orders"
+                    element={<SupplierOrders />}
+                />
+
+                <Route
+                    path="/restaurant/orders"
+                    element={<RestaurantOrders />}
                 />
 
 

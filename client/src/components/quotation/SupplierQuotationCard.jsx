@@ -12,7 +12,7 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
             case "quoted":
                 return "bg-blue-100 text-blue-700";
 
-            case "accepted":
+            case "awarded":
                 return "bg-green-100 text-green-700";
 
             case "rejected":

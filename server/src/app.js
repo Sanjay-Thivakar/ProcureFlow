@@ -22,6 +22,7 @@ const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/product.routes");
 const quotationRoutes = require("./routes/quotation.routes");
 const rfqRoutes = require("./routes/rfq.routes");
+const orderRoutes = require("./routes/order.routes");
 
 
 app.use("/api", testRoutes);
@@ -29,5 +30,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/quotations", quotationRoutes);
 app.use("/api/rfqs", rfqRoutes);
+app.use("/api/orders", orderRoutes);
 
 module.exports = app;

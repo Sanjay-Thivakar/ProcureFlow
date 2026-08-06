@@ -3,6 +3,7 @@ import {
     LayoutDashboard,
     PackageSearch,
     FileText,
+    PackageCheck,
     User,
 } from "lucide-react";
 
@@ -23,6 +24,12 @@ const RestaurantSidebar = () => {
             name: "My Quotations",
             path: "/restaurant/rfqs",
             icon: FileText,
+        },
+
+        {
+            name: "Orders",
+            path: "/restaurant/orders",
+            icon: PackageCheck,
         },
         {
             name: "Profile",

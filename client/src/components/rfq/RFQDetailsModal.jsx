@@ -53,9 +53,14 @@ const RFQDetailsModal = ({
                         rfq.quotations.map((quotation) => (
 
                             <QuotationCard
-                                key={quotation._id}
                                 quotation={quotation}
-                                onSuccess={onSuccess}
+                                onSuccess={async () => {
+
+                                    await fetchRFQs();
+
+                                    await refreshSelectedRFQ();
+
+                                }}
                             />
 
                         ))

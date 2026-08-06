@@ -3,6 +3,7 @@ import {
     LayoutDashboard,
     Package,
     FileText,
+    ClipboardList,
     User,
 } from "lucide-react";
 
@@ -21,9 +22,14 @@ const Sidebar = () => {
             icon: Package,
         },
         {
-            name: "Quotations",
+            name: "RFQs",
             path: "/supplier/quotations",
             icon: FileText,
+        },
+        {
+            name: "Orders",
+            path: "/supplier/orders",
+            icon: ClipboardList,
         },
         {
             name: "Profile",

@@ -3,8 +3,12 @@ import toast from "react-hot-toast";
 
 import RestaurantLayout from "../../components/layout/restaurant/RestaurantLayout";
 import RFQDetailsModal from "../../components/rfq/RFQDetailsModal";
+import RFQCard from "../../components/rfq/RFQCard";
+import RFQResponsesModal from "../../components/rfq/RFQResponsesModal";
 
 import { getRestaurantRFQs } from "../../services/rfqService";
+import { getRFQDetails } from "../../services/rfqService";
+
 
 const MyQuotation = () => {
 
@@ -12,8 +16,11 @@ const MyQuotation = () => {
     const [loading, setLoading] = useState(true);
 
     const [selectedRFQ, setSelectedRFQ] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isResponsesModalOpen, setIsResponsesModalOpen] = useState(false);
 
+    const [activeFilter, setActiveFilter] = useState("all");
+
+  
 
     const fetchRFQs = async () => {
         try {
@@ -21,6 +28,20 @@ const MyQuotation = () => {
             const response = await getRestaurantRFQs();
 
             setRFQs(response.rfqs);
+
+            if (selectedRFQ) {
+
+                const updated = response.rfqs.find(
+                    rfq => rfq._id === selectedRFQ._id
+                );
+
+                if (updated) {
+
+                    setSelectedRFQ(updated);
+
+                }
+
+            }
 
         } catch (error) {
 
@@ -39,6 +60,70 @@ const MyQuotation = () => {
         fetchRFQs();
     }, []);
 
+    const refreshSelectedRFQ = async () => {
+
+        if (!selectedRFQ) return;
+
+        try {
+
+            const response = await getRFQDetails(selectedRFQ._id);
+
+            setSelectedRFQ({
+                ...response.rfq,
+                quotations: response.quotations,
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    };
+
+    const handleViewResponses = (rfq) => {
+
+        setSelectedRFQ(rfq);
+
+        setIsResponsesModalOpen(true);
+
+    };
+
+    const handleCloseResponses = () => {
+
+        setSelectedRFQ(null);
+
+        setIsResponsesModalOpen(false);
+
+    };
+
+    const filteredRFQs = rfqs.filter((rfq) => {
+
+        if (activeFilter === "all") {
+            return true;
+        }
+
+        if (activeFilter === "review") {
+            return rfq.status === "open";
+        }
+
+        if (activeFilter === "waiting") {
+            return (
+                rfq.status === "open" &&
+                rfq.quotations.filter(
+                    quotation => quotation.status !== "pending"
+                ).length === 0
+            );
+        }
+
+        if (activeFilter === "completed") {
+            return rfq.status === "completed";
+        }
+
+        return true;
+
+    });
+
     return (
         <RestaurantLayout>
 
@@ -47,6 +132,66 @@ const MyQuotation = () => {
                 <h1 className="text-3xl font-bold mb-6">
                     My RFQs
                 </h1>
+
+                <div className="flex flex-wrap gap-3 mt-6 mb-10">
+
+                    <button
+                        onClick={() => setActiveFilter("all")}
+                        className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
+                            activeFilter === "all"
+                                ? "bg-gray-900 text-white"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                    >
+                        All ({rfqs.length})
+                    </button>
+
+                    <button
+                        onClick={() => setActiveFilter("review")}
+                        className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
+                            activeFilter === "review"
+                                ? "bg-blue-600 text-white"
+                                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                        }`}
+                    >
+                        Ready for Review (
+                        {rfqs.filter(r => r.status === "open").length}
+                        )
+                    </button>
+
+                    <button
+                        onClick={() => setActiveFilter("waiting")}
+                        className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
+                            activeFilter === "waiting"
+                                ? "bg-yellow-500 text-white"
+                                : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                        }`}
+                    >
+                        Waiting (
+                        {rfqs.filter(
+                            r =>
+                                r.status === "open" &&
+                                r.quotations.filter(
+                                    q => q.status !== "pending"
+                                ).length === 0
+                        ).length}
+                        )
+                    </button>
+
+                    <button
+                        onClick={() => setActiveFilter("completed")}
+                        className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
+                            activeFilter === "completed"
+                                ? "bg-green-600 text-white"
+                                : "bg-green-100 text-green-700 hover:bg-green-200"
+                        }`}
+                    >
+                        Completed (
+                        {rfqs.filter(r => r.status === "completed").length}
+                        )
+                    </button>
+
+                </div>
 
                 {loading ? (
 
@@ -64,55 +209,13 @@ const MyQuotation = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                        {rfqs.map((rfq) => (
+                        {filteredRFQs.map((rfq) => (
 
-                            <div
+                            <RFQCard
                                 key={rfq._id}
-                                className="bg-white rounded-xl border border-gray-200 shadow-sm p-6"
-                            >
-
-                                <h2 className="text-2xl font-bold">
-                                    {rfq.productName}
-                                </h2>
-
-                                <p className="mt-2 text-gray-600">
-                                    Quantity : {rfq.quantity} {rfq.unit}
-                                </p>
-
-                                <p className="text-gray-600">
-                                    Required By : {new Date(rfq.requiredBy).toLocaleDateString()}
-                                </p>
-
-                                <p className="text-gray-600">
-                                    Suppliers Invited : {rfq.quotations.length}
-                                </p>
-
-                                <p className="text-gray-600">
-                                    Responses Received : {
-                                        rfq.quotations.filter(
-                                            quotation => quotation.status !== "pending"
-                                        ).length
-                                    } / {rfq.quotations.length}
-                                </p>
-
-                                <button
-
-                                    onClick={() => {
-
-                                        setSelectedRFQ(rfq);
-
-                                        setIsModalOpen(true);
-
-                                    }}
-
-                                    className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
-
-                                >
-
-                                    View Responses
-
-                                </button>
-                            </div>
+                                rfq={rfq}
+                                onViewResponses={handleViewResponses}
+                            />
 
                         ))}
 
@@ -122,23 +225,18 @@ const MyQuotation = () => {
 
             </div>
 
-            <RFQDetailsModal
+            {
+                selectedRFQ && (
 
-                isOpen={isModalOpen}
+                    <RFQResponsesModal
+                        isOpen={isResponsesModalOpen}
+                        rfq={selectedRFQ}
+                        onClose={handleCloseResponses}
+                        onSuccess={fetchRFQs}
+                    />
 
-                rfq={selectedRFQ}
-
-                onClose={() => {
-
-                    setSelectedRFQ(null);
-
-                    setIsModalOpen(false);
-
-                }}
-
-                onSuccess={fetchRFQs}
-
-            />
+                )
+            }
 
         </RestaurantLayout>
     );

@@ -1,6 +1,7 @@
 const RFQ = require("../models/rfq.model"); 
 const Quotation = require("../models/quotation.model");
 const Product = require("../models/product.model");
+const Order = require("../models/order.model");
 const mongoose = require("mongoose");
 
 const createRFQ = async (req, res) => {
@@ -94,11 +95,6 @@ const createRFQ = async (req, res) => {
         await rfq.save();
 
         for (const product of selectedProducts) {
-
-            console.log("--------------------------------");
-            console.log("Creating quotation for:");
-            console.log(product.name);
-            console.log(product._id);
 
             const quotation = new Quotation({
 
@@ -217,6 +213,15 @@ const respondToQuotation = async (req, res) => {
             });
         }
 
+        const rfq = await RFQ.findById(quotation.rfq);
+
+        if (rfq.status === "completed") {
+            return res.status(400).json({
+                success: false,
+                message: "This RFQ has already been completed."
+            });
+        }
+
         // ✅ Extract request body FIRST
         const {
             quotedPrice,
@@ -286,7 +291,7 @@ const acceptQuotation = async (req, res) => {
         if (req.user.role !== "restaurant") {
             return res.status(403).json({
                 success: false,
-                message: "Only restaurants can accept quotations."
+                message: "Only restaurants can award suppliers."
             });
         }
 
@@ -309,7 +314,7 @@ const acceptQuotation = async (req, res) => {
         if (quotation.status !== "quoted") {
             return res.status(400).json({
                 success: false,
-                message: "Quotation cannot be accepted."
+                message: "Quotation cannot be awarded."
             });
         }
 
@@ -326,9 +331,36 @@ const acceptQuotation = async (req, res) => {
         }
 
         // Accept selected quotation
-        quotation.status = "accepted";
+        quotation.status = "awarded";
 
         await quotation.save();
+
+        // Create Order
+        const order = await Order.create({
+
+            rfq: quotation.rfq,
+
+            quotation: quotation._id,
+
+            restaurant: quotation.restaurant,
+
+            supplier: quotation.supplier,
+
+            product: quotation.product,
+
+            productName: quotation.productName,
+
+            unit: quotation.unit,
+
+            quantity: quotation.quantity,
+
+            agreedPrice: quotation.quotedPrice,
+
+            totalAmount: quotation.quantity * quotation.quotedPrice,
+
+            estimatedDelivery: quotation.estimatedDelivery,
+
+        });
 
         // Reject all other quotations for this RFQ
         await Quotation.updateMany(
@@ -354,7 +386,7 @@ const acceptQuotation = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Quotation accepted successfully.",
+            message: "Supplier awarded successfully.",
             quotation,
         });
 
