@@ -41,11 +41,11 @@
 # Phase 3 - Product Management 📦
 
 - [x] Backend CRUD
-- [ ] Product Listing
-- [ ] Add Product
-- [ ] Edit Product
-- [ ] Delete Product
-- [ ] Search Products
+- [x] Product Listing
+- [x] Add Product
+- [x] Edit Product
+- [x] Delete Product
+- [x] Search Products
 
 ---
 
@@ -59,19 +59,19 @@
 - [x] Quote Status
 
 ## Frontend
-- [ ] Request Quotation
-- [ ] View Quotations
-- [ ] Respond to Quote
-- [ ] Accept Quote
-- [ ] Reject Quote
+- [x] Request Quotation
+- [x] View Quotations
+- [x] Respond to Quote
+- [x] Accept Quote
+- [x] Reject Quote
 
 ---
 
 # Phase 5 - Supplier Portal 🏪
 
-- [ ] Dashboard
-- [ ] Incoming Quotations
-- [ ] Respond to Requests
+- [x] Dashboard
+- [x] Incoming Quotations
+- [x] Respond to Requests
 
 ---
 

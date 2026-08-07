@@ -77,14 +77,23 @@ const orderSchema = new mongoose.Schema(
             enum: [
                 "pending_supplier_confirmation",
                 "confirmed",
-                "rejected",
-                "shipped",
+                "preparing",
+                "out_for_delivery",
                 "delivered",
-                "completed",
                 "cancelled",
             ],
             default: "pending_supplier_confirmation",
         },
+        paymentStatus: {
+            type: String,
+            enum: [
+                "pending",
+                "paid",
+                "failed",
+                "refunded"
+            ],
+            default: "pending"
+        }  
     },
     {
         timestamps: true,

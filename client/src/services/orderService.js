@@ -41,3 +41,24 @@ export const getRestaurantOrders = async () => {
     return data;
 
 };
+
+export const updateOrderStatus = async (
+    orderId,
+    orderStatus
+) => {
+
+    const { data } = await api.patch(
+
+        `/orders/${orderId}/status`,
+
+        {
+
+            orderStatus,
+
+        }
+
+    );
+
+    return data;
+
+};

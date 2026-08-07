@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import {
     acceptOrder,
     rejectOrder,
+    updateOrderStatus,
 } from "../../services/orderService";
 
 const OrderCard = ({ order, onSuccess }) => {
@@ -28,6 +29,15 @@ const OrderCard = ({ order, onSuccess }) => {
                 return "bg-purple-100 text-purple-700";
 
             case "completed":
+                return "bg-emerald-100 text-emerald-700";
+            
+            case "preparing":
+                return "bg-blue-100 text-blue-700";
+
+            case "out_for_delivery":
+                return "bg-purple-100 text-purple-700";
+
+            case "delivered":
                 return "bg-emerald-100 text-emerald-700";
 
             default:
@@ -58,6 +68,15 @@ const OrderCard = ({ order, onSuccess }) => {
 
             case "completed":
                 return "Completed";
+
+            case "preparing":
+                return "Preparing";
+
+            case "out_for_delivery":
+                return "Out For Delivery";
+
+            case "delivered":
+                return "Delivered";
 
             default:
                 return status;
@@ -110,6 +129,31 @@ const OrderCard = ({ order, onSuccess }) => {
             toast.error(
                 error.response?.data?.message ||
                 "Failed to reject order."
+            );
+
+        }
+
+    };
+
+    const handleStatusUpdate = async (status) => {
+
+        try {
+
+            await updateOrderStatus(order._id, status);
+
+            toast.success("Order status updated successfully.");
+
+            if (onSuccess) {
+
+                await onSuccess();
+
+            }
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to update order."
             );
 
         }
@@ -244,33 +288,90 @@ const OrderCard = ({ order, onSuccess }) => {
 
             {/* Actions */}
 
-            {
-                order.orderStatus === "pending_supplier_confirmation" && (
+            <div className="mt-8">
 
-                    <div className="mt-8 flex gap-3">
+                {/* Pending */}
+
+                {order.orderStatus === "pending_supplier_confirmation" && (
+
+                    <div className="flex gap-3">
 
                         <button
                             onClick={handleAccept}
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors"
+                            className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"
                         >
-
                             Accept Order
-
                         </button>
 
                         <button
                             onClick={handleReject}
-                            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-medium transition-colors"
+                            className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition"
                         >
-
                             Reject Order
-
                         </button>
 
                     </div>
 
-                )
-            }
+                )}
+
+                {/* Confirmed */}
+
+                {order.orderStatus === "confirmed" && (
+
+                    <button
+                        onClick={() =>
+                            handleStatusUpdate("preparing")
+                        }
+                        className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                    >
+                        Start Preparing
+                    </button>
+
+                )}
+
+                {/* Preparing */}
+
+                {order.orderStatus === "preparing" && (
+
+                    <button
+                        onClick={() =>
+                            handleStatusUpdate("out_for_delivery")
+                        }
+                        className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition"
+                    >
+                        Out For Delivery
+                    </button>
+
+                )}
+
+                {/* Out for Delivery */}
+
+                {order.orderStatus === "out_for_delivery" && (
+
+                    <button
+                        onClick={() =>
+                            handleStatusUpdate("delivered")
+                        }
+                        className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition"
+                    >
+                        Mark Delivered
+                    </button>
+
+                )}
+
+                {/* Delivered */}
+
+                {order.orderStatus === "delivered" && (
+
+                    <div className="bg-green-100 text-green-700 text-center py-3 rounded-lg font-semibold">
+
+                        ✓ Order Delivered
+
+                    </div>
+
+                )}
+
+            </div>
 
         </div>
 

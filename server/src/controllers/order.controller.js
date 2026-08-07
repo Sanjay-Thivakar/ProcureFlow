@@ -227,6 +227,94 @@ const rejectOrder = async (req, res) => {
 
 };
 
+const updateOrderStatus = async (req, res) => {
+
+    try {
+
+        if (req.user.role !== "supplier") {
+
+            return res.status(403).json({
+                success: false,
+                message: "Only suppliers can update order status."
+            });
+
+        }
+
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Order not found."
+            });
+
+        }
+
+        if (order.supplier.toString() !== req.user.id) {
+
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized."
+            });
+
+        }
+
+        const { orderStatus } = req.body;
+
+        const validTransitions = {
+
+            confirmed: ["preparing"],
+
+            preparing: ["out_for_delivery"],
+
+            out_for_delivery: ["delivered"],
+
+        };
+
+        const allowedStatuses =
+            validTransitions[order.orderStatus] || [];
+
+        if (!allowedStatuses.includes(orderStatus)) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message: `Cannot change status from ${order.orderStatus} to ${orderStatus}.`
+
+            });
+
+        }
+
+        order.orderStatus = orderStatus;
+
+        await order.save();
+
+        return res.status(200).json({
+
+            success: true,
+
+            message: "Order status updated successfully.",
+
+            order,
+
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: error.message,
+
+        });
+
+    }
+
+};
+
 const getRestaurantOrders = async (req, res) => {
     try {
 
@@ -265,4 +353,5 @@ module.exports = {
     acceptOrder,
     rejectOrder,
     getRestaurantOrders,
+    updateOrderStatus,
 };
