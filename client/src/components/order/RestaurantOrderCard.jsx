@@ -1,6 +1,95 @@
 import React from "react";
 
+import { useState } from "react";
+import toast from "react-hot-toast";
+
+import { createPaymentOrder } from "../../services/paymentService";
+
+
 const RestaurantOrderCard = ({ order }) => {
+
+    const [paymentLoading, setPaymentLoading] = useState(false);
+
+    const handlePayment = async () => {
+
+        try {
+
+            setPaymentLoading(true);
+
+            const response = await createPaymentOrder(order._id);
+
+            console.log("Payment order created:", response);
+
+            const razorpayOrder = response.razorpayOrder;
+
+            // Load Razorpay Checkout
+            const script = document.createElement("script");
+
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+            script.onload = () => {
+
+                const options = {
+
+                    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+
+                    amount: razorpayOrder.amount,
+
+                    currency: razorpayOrder.currency,
+
+                    name: "ProcureFlow",
+
+                    description: `Payment for ${order.productName}`,
+
+                    order_id: razorpayOrder.id,
+
+                    handler: async function (paymentResponse) {
+
+                        console.log(
+                            "Razorpay payment successful:",
+                            paymentResponse
+                        );
+
+                    },
+
+                    prefill: {
+                        name: order.restaurant?.name || "",
+                    },
+
+                    theme: {
+                        color: "#4f46e5",
+                    },
+
+                };
+
+                const razorpay = new window.Razorpay(options);
+
+                razorpay.open();
+
+            };
+
+            script.onerror = () => {
+
+                toast.error("Failed to load Razorpay Checkout.");
+
+            };
+
+            document.body.appendChild(script);
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to initiate payment."
+            );
+
+        } finally {
+
+            setPaymentLoading(false);
+
+        }
+
+    };
 
     const getStatusStyles = (status) => {
 
@@ -166,6 +255,28 @@ const RestaurantOrderCard = ({ order }) => {
                 </div>
 
             </div>
+            {/*Payment Buttion */}
+
+            {order.orderStatus === "delivered" &&
+                order.paymentStatus !== "paid" && (
+
+                <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end">
+
+                    <button
+                        onClick={handlePayment}
+                        disabled={paymentLoading}
+                        className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+
+                        {paymentLoading
+                            ? "Processing..."
+                            : `Pay ₹${order.totalAmount}`}
+
+                    </button>
+
+                </div>
+
+            )}
 
         </div>
 
