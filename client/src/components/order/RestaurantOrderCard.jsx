@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-import { createPaymentOrder } from "../../services/paymentService";
+import { createPaymentOrder, verifyPayment} from "../../services/paymentService";
 
 
 const RestaurantOrderCard = ({ order }) => {
@@ -45,10 +45,38 @@ const RestaurantOrderCard = ({ order }) => {
 
                     handler: async function (paymentResponse) {
 
-                        console.log(
-                            "Razorpay payment successful:",
-                            paymentResponse
-                        );
+                        try {
+
+                            console.log(
+                                "Razorpay payment successful:",
+                                paymentResponse
+                            );
+
+                            const verificationResponse =
+                                await verifyPayment(paymentResponse);
+
+                            console.log(
+                                "Payment verification response:",
+                                verificationResponse
+                            );
+
+                            toast.success(
+                                "Payment completed successfully!"
+                            );
+
+                        } catch (error) {
+
+                            console.error(
+                                "Payment verification error:",
+                                error
+                            );
+
+                            toast.error(
+                                error.response?.data?.message ||
+                                "Payment verification failed."
+                            );
+
+                        }
 
                     },
 
