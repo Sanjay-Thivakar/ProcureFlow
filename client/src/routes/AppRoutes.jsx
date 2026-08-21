@@ -16,6 +16,8 @@ import SupplierQuotations from "../pages/supplier/SupplierQuotations";
 
 import SupplierOrders from "../pages/supplier/MyOrders";
 import RestaurantOrders from "../pages/restaurant/MyOrders";
+import RestaurantProfile from "../pages/restaurant/Profile";
+import SupplierProfile from "../pages/supplier/Profile";
 
 const AppRoutes = () => {
     const { user } = useAuth();
@@ -89,6 +91,19 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={["restaurant"]}>
                             <RestaurantOrders />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            {user?.role === "supplier" ? (
+                                <SupplierProfile />
+                            ) : (
+                                <RestaurantProfile />
+                            )}
                         </ProtectedRoute>
                     }
                 />
