@@ -82,6 +82,7 @@ return (
                         <RestaurantOrderCard
                             key={order._id}
                             order={order}
+                            onPaymentSuccess={fetchOrders}
                         />
 
                     ))}

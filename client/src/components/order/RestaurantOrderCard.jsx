@@ -1,16 +1,17 @@
-import React from "react";
 
-import { useState } from "react";
+import React,{ useState } from "react";
 import toast from "react-hot-toast";
 
 import { createPaymentOrder, verifyPayment} from "../../services/paymentService";
 
 
-const RestaurantOrderCard = ({ order }) => {
+const RestaurantOrderCard = ({ order,onPaymentSuccess }) => {
 
     const [paymentLoading, setPaymentLoading] = useState(false);
 
     const handlePayment = async () => {
+
+        if (paymentLoading) return;
 
         try {
 
@@ -64,6 +65,11 @@ const RestaurantOrderCard = ({ order }) => {
                                 "Payment completed successfully!"
                             );
 
+                            // Refresh orders in the parent component
+                            if (onPaymentSuccess) {
+                                await onPaymentSuccess();
+                            }
+
                         } catch (error) {
 
                             console.error(
@@ -75,6 +81,10 @@ const RestaurantOrderCard = ({ order }) => {
                                 error.response?.data?.message ||
                                 "Payment verification failed."
                             );
+
+                        } finally {
+
+                            setPaymentLoading(false);
 
                         }
 
@@ -88,6 +98,13 @@ const RestaurantOrderCard = ({ order }) => {
                         color: "#4f46e5",
                     },
 
+                    // User closes Razorpay without completing payment
+                    ondismiss: function () {
+
+                        setPaymentLoading(false);
+
+                    },
+
                 };
 
                 const razorpay = new window.Razorpay(options);
@@ -98,7 +115,11 @@ const RestaurantOrderCard = ({ order }) => {
 
             script.onerror = () => {
 
-                toast.error("Failed to load Razorpay Checkout.");
+                setPaymentLoading(false);
+
+                toast.error(
+                    "Failed to load Razorpay Checkout."
+                );
 
             };
 
@@ -106,18 +127,18 @@ const RestaurantOrderCard = ({ order }) => {
 
         } catch (error) {
 
+            setPaymentLoading(false);
+
             toast.error(
                 error.response?.data?.message ||
                 "Failed to initiate payment."
             );
 
-        } finally {
-
-            setPaymentLoading(false);
-
         }
 
     };
+
+    
 
     const getStatusStyles = (status) => {
 
@@ -283,28 +304,45 @@ const RestaurantOrderCard = ({ order }) => {
                 </div>
 
             </div>
-            {/*Payment Buttion */}
+            {/* Payment Section */}
 
-            {order.orderStatus === "delivered" &&
-                order.paymentStatus !== "paid" && (
+                {order.orderStatus === "delivered" && (
 
-                <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end">
+                    <div className="mt-6 pt-6 border-t border-gray-200 flex justify-end">
 
-                    <button
-                        onClick={handlePayment}
-                        disabled={paymentLoading}
-                        className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
+                        {order.paymentStatus === "paid" ? (
 
-                        {paymentLoading
-                            ? "Processing..."
-                            : `Pay ₹${order.totalAmount}`}
+                            <div className="flex items-center gap-2 text-green-600 font-semibold">
 
-                    </button>
+                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-green-100">
+                                    ✓
+                                </span>
 
-                </div>
+                                Payment Successful
 
-            )}
+                            </div>
+
+                        ) : (
+
+                            <button
+                                onClick={handlePayment}
+                                disabled={paymentLoading}
+                                className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+
+                                {paymentLoading
+                                    ? "Processing..."
+                                    : `Pay ₹${order.totalAmount}`}
+
+                            </button>
+
+                        )}
+
+                    </div>
+
+                )}
+
+            
 
         </div>
 
