@@ -1,24 +1,6 @@
 import ActivityItem from "./ActivityItem";
 
-const activities = [
-    {
-        title: "Rice quotation accepted",
-        time: "2 hours ago",
-        status: "success",
-    },
-    {
-        title: "Chicken supplier responded",
-        time: "5 hours ago",
-        status: "pending",
-    },
-    {
-        title: "Tomato quotation created",
-        time: "Yesterday",
-        status: "info",
-    },
-];
-
-const RecentActivity = () => {
+const RecentActivity = ({ activities = [] }) => {
 
     return (
 
@@ -28,18 +10,22 @@ const RecentActivity = () => {
                 Recent Activity
             </h3>
 
-            <div className="space-y-5">
-
-                {activities.map((activity, index) => (
-
-                    <ActivityItem
-                        key={index}
-                        {...activity}
-                    />
-
-                ))}
-
-            </div>
+            {activities.length === 0 ? (
+                <div className="text-sm text-slate-500 text-center py-6">
+                    No recent activity.
+                </div>
+            ) : (
+                <div className="space-y-5">
+                    {activities.map((activity, index) => (
+                        <ActivityItem
+                            key={index}
+                            title={activity.title}
+                            time={activity.time}
+                            status={activity.status}
+                        />
+                    ))}
+                </div>
+            )}
 
         </div>
 
