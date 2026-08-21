@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { FileText, ClipboardCheck, Clock3, PackageCheck } from "lucide-react";
 
 import RestaurantLayout from "../../components/layout/restaurant/RestaurantLayout";
 import RFQDetailsModal from "../../components/rfq/RFQDetailsModal";
 import RFQCard from "../../components/rfq/RFQCard";
 import RFQResponsesModal from "../../components/rfq/RFQResponsesModal";
+import EmptyState from "../../components/ui/EmptyState";
 
 import { getRestaurantRFQs } from "../../services/rfqService";
 import { getRFQDetails } from "../../services/rfqService";
@@ -126,6 +128,44 @@ const MyQuotation = () => {
 
     });
 
+    const getEmptyStateProps = () => {
+        switch (activeFilter) {
+            case "review":
+                return {
+                    title: "No quotes to review",
+                    description: "There are currently no active supplier bids awaiting your review.",
+                    icon: ClipboardCheck,
+                };
+            case "waiting":
+                return {
+                    title: "No pending requests",
+                    description: "There are currently no RFQs waiting for supplier responses.",
+                    icon: Clock3,
+                };
+            case "completed":
+                return {
+                    title: "No completed RFQs",
+                    description: "You haven't awarded or completed any RFQs yet.",
+                    icon: PackageCheck,
+                };
+            default:
+                if (rfqs.length === 0) {
+                    return {
+                        title: "No RFQs Found",
+                        description: "You haven't created any Requests for Quotation (RFQs) yet. Go to Browse Products to create one.",
+                        icon: FileText,
+                    };
+                }
+                return {
+                    title: "No RFQs Found",
+                    description: "No Requests for Quotation match your current query.",
+                    icon: FileText,
+                };
+        }
+    };
+
+    const emptyProps = getEmptyStateProps();
+
     return (
         <RestaurantLayout>
 
@@ -208,11 +248,13 @@ const MyQuotation = () => {
                         Loading quotations...
                     </div>
 
-                ) : rfqs.length === 0 ? (
+                ) : filteredRFQs.length === 0 ? (
 
-                    <div className="text-center text-gray-500">
-                        You haven't created any RFQs yet...
-                    </div>
+                    <EmptyState
+                        title={emptyProps.title}
+                        description={emptyProps.description}
+                        icon={emptyProps.icon}
+                    />
 
                 ) : (
 
