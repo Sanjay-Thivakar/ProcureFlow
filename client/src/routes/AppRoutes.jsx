@@ -77,12 +77,20 @@ const AppRoutes = () => {
 
                 <Route
                     path="/supplier/orders"
-                    element={<SupplierOrders />}
+                    element={
+                        <ProtectedRoute allowedRoles={["supplier"]}>
+                            <SupplierOrders />
+                        </ProtectedRoute>
+                    }
                 />
 
                 <Route
                     path="/restaurant/orders"
-                    element={<RestaurantOrders />}
+                    element={
+                        <ProtectedRoute allowedRoles={["restaurant"]}>
+                            <RestaurantOrders />
+                        </ProtectedRoute>
+                    }
                 />
 
 

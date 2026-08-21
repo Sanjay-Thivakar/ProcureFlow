@@ -103,17 +103,19 @@ const MyQuotation = () => {
             return true;
         }
 
+        const hasPending = rfq.quotations.some((q) => q.status === "pending");
+        const hasActiveQuoted = rfq.quotations.some(
+            (q) =>
+                q.status === "quoted" &&
+                (!q.validUntil || new Date(q.validUntil) >= new Date())
+        );
+
         if (activeFilter === "review") {
-            return rfq.status === "open";
+            return rfq.status === "open" && hasActiveQuoted;
         }
 
         if (activeFilter === "waiting") {
-            return (
-                rfq.status === "open" &&
-                rfq.quotations.filter(
-                    quotation => quotation.status !== "pending"
-                ).length === 0
-            );
+            return rfq.status === "open" && hasPending && !hasActiveQuoted;
         }
 
         if (activeFilter === "completed") {
@@ -155,7 +157,13 @@ const MyQuotation = () => {
                         }`}
                     >
                         Ready for Review (
-                        {rfqs.filter(r => r.status === "open").length}
+                        {rfqs.filter(r =>
+                            r.status === "open" &&
+                            r.quotations.some(q =>
+                                q.status === "quoted" &&
+                                (!q.validUntil || new Date(q.validUntil) >= new Date())
+                            )
+                        ).length}
                         )
                     </button>
 
@@ -168,12 +176,13 @@ const MyQuotation = () => {
                         }`}
                     >
                         Waiting (
-                        {rfqs.filter(
-                            r =>
-                                r.status === "open" &&
-                                r.quotations.filter(
-                                    q => q.status !== "pending"
-                                ).length === 0
+                        {rfqs.filter(r =>
+                            r.status === "open" &&
+                            r.quotations.some(q => q.status === "pending") &&
+                            !r.quotations.some(q =>
+                                q.status === "quoted" &&
+                                (!q.validUntil || new Date(q.validUntil) >= new Date())
+                            )
                         ).length}
                         )
                     </button>

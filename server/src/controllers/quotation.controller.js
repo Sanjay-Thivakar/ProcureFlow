@@ -4,6 +4,20 @@ const Product = require("../models/product.model");
 const Order = require("../models/order.model");
 const mongoose = require("mongoose");
 
+const syncExpiredQuotations = async (queryObject) => {
+    const now = new Date();
+    await Quotation.updateMany(
+        {
+            ...queryObject,
+            status: "quoted",
+            validUntil: { $exists: true, $lt: now }
+        },
+        {
+            $set: { status: "expired" }
+        }
+    );
+};
+
 const createRFQ = async (req, res) => {
 
     try {
@@ -159,6 +173,8 @@ const getSupplierQuotations = async (req, res) => {
                 message: "Only suppliers can view quotations."
             });
         }
+
+        await syncExpiredQuotations({ supplier: req.user.id });
 
         const quotations = await Quotation.find({
             supplier: req.user.id
@@ -472,6 +488,8 @@ const getRestaurantQuotations = async (req, res) => {
                 message: "Only restaurants can view their quotations."
             });
         }
+
+        await syncExpiredQuotations({ restaurant: req.user.id });
 
         const quotations = await Quotation.find({
             restaurant: req.user.id

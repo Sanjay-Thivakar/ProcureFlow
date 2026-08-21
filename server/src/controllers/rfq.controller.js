@@ -13,6 +13,18 @@ const getRestaurantRFQs = async (req, res) => {
             });
         }
 
+        const now = new Date();
+        await Quotation.updateMany(
+            {
+                restaurant: req.user.id,
+                status: "quoted",
+                validUntil: { $exists: true, $lt: now }
+            },
+            {
+                $set: { status: "expired" }
+            }
+        );
+
         const rfqs = await RFQ.find({
             restaurant: req.user.id,
         });
@@ -63,6 +75,18 @@ const getRestaurantRFQs = async (req, res) => {
 const getRFQDetails = async (req, res) => {
 
     try {
+
+        const now = new Date();
+        await Quotation.updateMany(
+            {
+                rfq: req.params.id,
+                status: "quoted",
+                validUntil: { $exists: true, $lt: now }
+            },
+            {
+                $set: { status: "expired" }
+            }
+        );
 
         const rfq = await RFQ.findById(req.params.id);
 

@@ -62,16 +62,6 @@ const orderSchema = new mongoose.Schema(
             type: Date,
         },
 
-        paymentStatus: {
-            type: String,
-            enum: [
-                "pending",
-                "paid",
-                "refunded",
-            ],
-            default: "pending",
-        },
-
         orderStatus: {
             type: String,
             enum: [
@@ -81,6 +71,7 @@ const orderSchema = new mongoose.Schema(
                 "out_for_delivery",
                 "delivered",
                 "cancelled",
+                "rejected",
             ],
             default: "pending_supplier_confirmation",
         },

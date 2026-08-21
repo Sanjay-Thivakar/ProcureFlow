@@ -14,6 +14,20 @@ const RFQCard = ({ rfq, onViewResponses }) => {
             };
         }
 
+        const hasPending = rfq.quotations.some((q) => q.status === "pending");
+        const hasActiveQuoted = rfq.quotations.some(
+            (q) =>
+                q.status === "quoted" &&
+                (!q.validUntil || new Date(q.validUntil) >= new Date())
+        );
+
+        if (!hasPending && !hasActiveQuoted) {
+            return {
+                text: "Expired",
+                color: "bg-red-100 text-red-700",
+            };
+        }
+
         if (responsesReceived === rfq.quotations.length) {
             return {
                 text: "Ready for Review",

@@ -10,6 +10,12 @@ import toast from "react-hot-toast";
 
 const QuotationCard = ({ quotation,onSuccess }) => {
 
+    const isExpired =
+        quotation.status === "expired" ||
+        (quotation.status === "quoted" &&
+            quotation.validUntil &&
+            new Date(quotation.validUntil) < new Date());
+
     const getStatusStyles = (status) => {
         switch (status) {
             case "pending":
@@ -99,10 +105,10 @@ const QuotationCard = ({ quotation,onSuccess }) => {
 
                 <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusStyles(
-                        quotation.status
+                        isExpired ? "expired" : quotation.status
                     )}`}
                 >
-                    {quotation.status}
+                    {isExpired ? "expired" : quotation.status}
                 </span>
 
             </div>
@@ -148,7 +154,7 @@ const QuotationCard = ({ quotation,onSuccess }) => {
                     </p>
 
                     <p className="font-medium capitalize text-gray-800 mt-1">
-                        {quotation.status}
+                        {isExpired ? "expired" : quotation.status}
                     </p>
                 </div>
 
@@ -235,7 +241,7 @@ const QuotationCard = ({ quotation,onSuccess }) => {
                     )}
 
                     {/* Restaurant Actions */}
-                    {quotation.status === "quoted" && (
+                    {quotation.status === "quoted" && !isExpired && (
 
                         <div className="mt-auto pt-6 flex gap-3">
 
