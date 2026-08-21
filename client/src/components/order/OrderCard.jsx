@@ -25,9 +25,6 @@ const OrderCard = ({ order, onSuccess }) => {
             case "shipped":
                 return "bg-blue-100 text-blue-700";
 
-            case "delivered":
-                return "bg-purple-100 text-purple-700";
-
             case "completed":
                 return "bg-emerald-100 text-emerald-700";
             
@@ -62,9 +59,6 @@ const OrderCard = ({ order, onSuccess }) => {
 
             case "shipped":
                 return "Shipped";
-
-            case "delivered":
-                return "Delivered";
 
             case "completed":
                 return "Completed";
@@ -263,6 +257,42 @@ const OrderCard = ({ order, onSuccess }) => {
                     ₹{order.totalAmount}
 
                 </p>
+
+            </div>
+
+            {/* Payment Status */}
+
+            <div className="border-t pt-4 mt-4">
+
+                <p className="text-xs uppercase tracking-wide text-gray-400">
+                    Payment Status
+                </p>
+
+                {order.paymentStatus === "paid" ? (
+
+                    <div className="flex items-center gap-2 mt-2 text-green-600 font-semibold">
+
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-green-100">
+                            ✓
+                        </span>
+
+                        Payment Received
+
+                    </div>
+
+                ) : (
+
+                    <div className="flex items-center gap-2 mt-2 text-yellow-600 font-semibold">
+
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100">
+                            !
+                        </span>
+
+                        Payment Pending
+
+                    </div>
+
+                )}
 
             </div>
 
