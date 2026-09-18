@@ -5,8 +5,8 @@ import Input from "../common/Input";
 import Button from "../common/Button";
 import SelectableCard from "../ui/SelectableCard";
 
-//used for rrouting from frontend to backend , and also to provide the authorization contex register/login
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 
 
@@ -45,7 +45,7 @@ const RegisterForm = () => {
         e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match.");
+            toast.error("Passwords do not match.");
             return;
         }
 
@@ -57,11 +57,11 @@ const RegisterForm = () => {
                 role: formData.role,
             });
 
-            alert("Registration successful! Please sign in.");
+            toast.success("Registration successful! Please sign in.");
 
             navigate("/login");
         } catch (error) {
-            alert(
+            toast.error(
                 error.response?.data?.message ||
                 "Registration failed."
             );

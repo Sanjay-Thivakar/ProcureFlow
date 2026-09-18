@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import Input from "../common/Input";
 import Button from "../common/Button";
@@ -41,7 +42,7 @@ const LoginForm = () => {
 
             console.error(error);
 
-            alert(error.response?.data?.message || "Login Failed");
+            toast.error(error.response?.data?.message || "Login Failed");
 
         } finally {
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const categories = [
     "Vegetables",
@@ -68,17 +69,17 @@ const ProductForm = ({
             formData.price === "" ||
             formData.stock === ""
         ) {
-            alert("Please fill all fields.");
+            toast.error("Please fill all fields.");
             return;
         }
 
         if (Number(formData.price) <= 0) {
-            alert("Price must be greater than 0.");
+            toast.error("Price must be greater than 0.");
             return;
         }
 
         if (Number(formData.stock) < 0) {
-            alert("Stock cannot be negative.");
+            toast.error("Stock cannot be negative.");
             return;
         }
 
