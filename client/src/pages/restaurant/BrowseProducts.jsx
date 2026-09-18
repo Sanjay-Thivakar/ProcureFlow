@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { PackageSearch } from "lucide-react";
 
 import BrowseProductCard from "./BrowseProductCard";
 import RestaurantLayout from "../../components/layout/restaurant/RestaurantLayout";
 import CreateRFQModal from "../../components/rfq/CreateRFQModal";
+import EmptyState from "../../components/ui/EmptyState";
 
 import { getProducts } from "../../services/productService";
 import { createRFQ } from "../../services/rfqService";
@@ -304,16 +306,23 @@ const BrowseProducts = () => {
 
                 </div>
 
-                {
-                    products.length === 0 ? (
+                {products.length === 0 ? (
 
-                        <div className="text-center text-gray-500 mt-10">
+                    <EmptyState
+                        title="No products available"
+                        description="No supplier products are available at the moment."
+                        icon={PackageSearch}
+                    />
 
-                            No supplier products are available at the moment.
+                ) : filteredProducts.length === 0 ? (
 
-                        </div>
+                    <EmptyState
+                        title="No products found"
+                        description="No products match your search or filter criteria. Try adjusting your search or filters."
+                        icon={PackageSearch}
+                    />
 
-                    ) : (
+                ) : (
 
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { PackageCheck } from "lucide-react";
 
 import { getRestaurantOrders } from "../../services/orderService";
 import RestaurantOrderCard from "../../components/order/RestaurantOrderCard";
 import RestaurantLayout from "../../components/layout/restaurant/RestaurantLayout";
 import Loader from "../../components/common/Loader";
+import EmptyState from "../../components/ui/EmptyState";
 
 const RestaurantOrders = () => {
 
@@ -68,13 +70,13 @@ const RestaurantOrders = () => {
 
                 ) : orders.length === 0 ? (
 
-                <div className="bg-white rounded-xl border p-8 text-center">
+                    <EmptyState
+                        title="No orders yet"
+                        description="Orders you place with suppliers will appear here."
+                        icon={PackageCheck}
+                    />
 
-                    No orders found.
-
-                </div>
-
-            ) : (
+                ) : (
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 

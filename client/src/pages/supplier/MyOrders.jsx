@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { ClipboardList } from "lucide-react";
 
 import SupplierLayout from "../../components/layout/supplier/SupplierLayout";
 import OrderCard from "../../components/order/OrderCard";
+import EmptyState from "../../components/ui/EmptyState";
 
 import { getSupplierOrders } from "../../services/orderService";
 
@@ -64,11 +66,11 @@ const SupplierOrders = () => {
 
                     ) : orders.length === 0 ? (
 
-                        <div className="text-center text-gray-500">
-
-                            No orders available.
-
-                        </div>
+                        <EmptyState
+                            title="No orders yet"
+                            description="Orders placed by restaurants will appear here."
+                            icon={ClipboardList}
+                        />
 
                     ) : (
 

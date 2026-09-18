@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { FileText } from "lucide-react";
 
 import SupplierLayout from "../../components/layout/supplier/SupplierLayout";
 import SupplierQuotationCard from "../../components/quotation/SupplierQuotationCard";
 import RespondQuotationModal from "../../components/quotation/RespondQuotationModal";
+import EmptyState from "../../components/ui/EmptyState";
 
 import { getSupplierQuotations } from "../../services/quotationService";
 
@@ -89,16 +91,12 @@ const SupplierQuotations = () => {
 
                 ) : quotations.length === 0 ? (
 
-                    <div className="mt-8 bg-white rounded-xl border border-gray-200 p-8 text-center">
-
-                        <h2 className="text-xl font-semibold">
-                            No quotation requests yet
-                        </h2>
-
-                        <p className="text-gray-500 mt-2">
-                            Restaurants will appear here once they request quotations for your products.
-                        </p>
-
+                    <div className="mt-8">
+                        <EmptyState
+                            title="No quotations yet"
+                            description="Incoming quotation requests from restaurants will appear here."
+                            icon={FileText}
+                        />
                     </div>
 
                 ) : (
