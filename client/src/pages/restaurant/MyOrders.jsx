@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { getRestaurantOrders } from "../../services/orderService";
 import RestaurantOrderCard from "../../components/order/RestaurantOrderCard";
 import RestaurantLayout from "../../components/layout/restaurant/RestaurantLayout";
+import Loader from "../../components/common/Loader";
 
 const RestaurantOrders = () => {
 
@@ -39,33 +40,33 @@ const RestaurantOrders = () => {
 
     }, []);
 
-    if (loading) {
-        return <p>Loading orders...</p>;
-    }
+    return (
 
-return (
+        <RestaurantLayout>
 
-    <RestaurantLayout>
+            <div className="p-6 space-y-6">
 
-        <div className="p-6 space-y-6">
+                <div>
 
-            <div>
+                    <h1 className="text-3xl font-bold mb-4">
 
-                <h1 className="text-3xl font-bold mb-4">
+                        My Orders
 
-                    My Orders
+                    </h1>
 
-                </h1>
+                    <p className="text-gray-500">
 
-                <p className="text-gray-500">
+                        Orders placed with suppliers.
 
-                    Orders placed with suppliers.
+                    </p>
 
-                </p>
+                </div>
 
-            </div>
+                {loading ? (
 
-            {orders.length === 0 ? (
+                    <Loader />
+
+                ) : orders.length === 0 ? (
 
                 <div className="bg-white rounded-xl border p-8 text-center">
 

@@ -39,7 +39,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className="flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
+        <aside className="flex min-h-screen w-64 flex-col border-r border-slate-200 bg-white">
 
             <div className="border-b border-slate-200 p-6">
                 <h1 className="text-2xl font-bold">ProcureFlow</h1>

@@ -268,7 +268,19 @@ const OrderCard = ({ order, onSuccess }) => {
                     Payment Status
                 </p>
 
-                {order.paymentStatus === "paid" ? (
+                {order.orderStatus === "rejected" || order.orderStatus === "cancelled" ? (
+
+                    <div className="flex items-center gap-2 mt-2 text-gray-500 font-semibold">
+
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-500 text-xs">
+                            —
+                        </span>
+
+                        No Payment Due
+
+                    </div>
+
+                ) : order.paymentStatus === "paid" ? (
 
                     <div className="flex items-center gap-2 mt-2 text-green-600 font-semibold">
 

@@ -6,6 +6,7 @@ import EmptyState from "../../components/products/EmptyState";
 import DashboardLayout from "../../components/layout/supplier/SupplierLayout";
 import ProductModal from "../../components/products/ProductModal";
 import DeleteModal from "../../components/products/DeleteModal";
+import Loader from "../../components/common/Loader";
 
 
 import {
@@ -83,14 +84,6 @@ const Products = () => {
         setIsModalOpen(false);
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-[70vh]">
-                Loading Products...
-            </div>
-        );
-    }
-
     const handleSubmit = async (formData) => {
 
         try {
@@ -148,7 +141,9 @@ const Products = () => {
                     onAddProduct={handleAddProduct}
                 />
 
-                {filteredProducts.length === 0 ? (
+                {loading ? (
+                    <Loader />
+                ) : filteredProducts.length === 0 ? (
                     <EmptyState />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

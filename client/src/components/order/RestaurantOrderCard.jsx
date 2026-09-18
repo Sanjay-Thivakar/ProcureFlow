@@ -9,6 +9,30 @@ const RestaurantOrderCard = ({ order,onPaymentSuccess }) => {
 
     const [paymentLoading, setPaymentLoading] = useState(false);
 
+    const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+            if (window.Razorpay) {
+                return resolve(true);
+            }
+
+            const existingScript = document.querySelector(
+                'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+            );
+
+            if (existingScript) {
+                existingScript.addEventListener("load", () => resolve(true), { once: true });
+                existingScript.addEventListener("error", () => resolve(false), { once: true });
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
     const handlePayment = async () => {
 
         if (paymentLoading) return;
@@ -17,113 +41,102 @@ const RestaurantOrderCard = ({ order,onPaymentSuccess }) => {
 
             setPaymentLoading(true);
 
+            // Ensure Razorpay SDK is loaded without duplicate script injection
+            if (!window.Razorpay) {
+                const loaded = await loadRazorpayScript();
+                if (!loaded || !window.Razorpay) {
+                    setPaymentLoading(false);
+                    toast.error("Failed to load Razorpay Checkout.");
+                    return;
+                }
+            }
+
             const response = await createPaymentOrder(order._id);
 
             console.log("Payment order created:", response);
 
             const razorpayOrder = response.razorpayOrder;
 
-            // Load Razorpay Checkout
-            const script = document.createElement("script");
+            const options = {
 
-            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
 
-            script.onload = () => {
+                amount: razorpayOrder.amount,
 
-                const options = {
+                currency: razorpayOrder.currency,
 
-                    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                name: "ProcureFlow",
 
-                    amount: razorpayOrder.amount,
+                description: `Payment for ${order.productName}`,
 
-                    currency: razorpayOrder.currency,
+                order_id: razorpayOrder.id,
 
-                    name: "ProcureFlow",
+                handler: async function (paymentResponse) {
 
-                    description: `Payment for ${order.productName}`,
+                    try {
 
-                    order_id: razorpayOrder.id,
+                        console.log(
+                            "Razorpay payment successful:",
+                            paymentResponse
+                        );
 
-                    handler: async function (paymentResponse) {
+                        const verificationResponse =
+                            await verifyPayment(paymentResponse);
 
-                        try {
+                        console.log(
+                            "Payment verification response:",
+                            verificationResponse
+                        );
 
-                            console.log(
-                                "Razorpay payment successful:",
-                                paymentResponse
-                            );
+                        toast.success(
+                            "Payment completed successfully!"
+                        );
 
-                            const verificationResponse =
-                                await verifyPayment(paymentResponse);
-
-                            console.log(
-                                "Payment verification response:",
-                                verificationResponse
-                            );
-
-                            toast.success(
-                                "Payment completed successfully!"
-                            );
-
-                            // Refresh orders in the parent component
-                            if (onPaymentSuccess) {
-                                await onPaymentSuccess();
-                            }
-
-                        } catch (error) {
-
-                            console.error(
-                                "Payment verification error:",
-                                error
-                            );
-
-                            toast.error(
-                                error.response?.data?.message ||
-                                "Payment verification failed."
-                            );
-
-                        } finally {
-
-                            setPaymentLoading(false);
-
+                        // Refresh orders in the parent component
+                        if (onPaymentSuccess) {
+                            await onPaymentSuccess();
                         }
 
-                    },
+                    } catch (error) {
 
-                    prefill: {
-                        name: order.restaurant?.name || "",
-                    },
+                        console.error(
+                            "Payment verification error:",
+                            error
+                        );
 
-                    theme: {
-                        color: "#4f46e5",
-                    },
+                        toast.error(
+                            error.response?.data?.message ||
+                            "Payment verification failed."
+                        );
 
-                    // User closes Razorpay without completing payment
-                    ondismiss: function () {
+                    } finally {
 
                         setPaymentLoading(false);
 
-                    },
+                    }
 
-                };
+                },
 
-                const razorpay = new window.Razorpay(options);
+                prefill: {
+                    name: order.restaurant?.name || "",
+                },
 
-                razorpay.open();
+                theme: {
+                    color: "#4f46e5",
+                },
+
+                // User closes Razorpay without completing payment
+                ondismiss: function () {
+
+                    setPaymentLoading(false);
+
+                },
 
             };
 
-            script.onerror = () => {
+            const razorpay = new window.Razorpay(options);
 
-                setPaymentLoading(false);
-
-                toast.error(
-                    "Failed to load Razorpay Checkout."
-                );
-
-            };
-
-            document.body.appendChild(script);
+            razorpay.open();
 
         } catch (error) {
 
@@ -158,6 +171,9 @@ const RestaurantOrderCard = ({ order,onPaymentSuccess }) => {
 
             case "delivered":
                 return "bg-emerald-100 text-emerald-700";
+
+            case "rejected":
+                return "bg-red-100 text-red-700";
 
             case "cancelled":
                 return "bg-red-100 text-red-700";

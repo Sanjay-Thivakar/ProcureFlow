@@ -18,8 +18,43 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
             case "rejected":
                 return "bg-red-100 text-red-700";
 
+            case "expired":
+                return "bg-orange-100 text-orange-700";
+
+            case "declined":
+                return "bg-gray-100 text-gray-700";
+
             default:
                 return "bg-gray-100 text-gray-700";
+        }
+
+    };
+
+    const getActionButtonLabel = (status) => {
+
+        switch (status) {
+
+            case "pending":
+                return "Respond to Quotation";
+
+            case "quoted":
+                return "Quote Submitted";
+
+            case "awarded":
+                return "Quote Awarded";
+
+            case "rejected":
+                return "Rejected";
+
+            case "expired":
+                return "Expired";
+
+            case "declined":
+                return "Declined";
+
+            default:
+                return "Unavailable";
+
         }
 
     };
@@ -153,13 +188,11 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
                     disabled={quotation.status !== "pending"}
                     className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
                         quotation.status === "pending"
-                            ? "bg-indigo-600 hover:bg-indigo-700 hover:scale-[1.02] text-white"
+                            ? "bg-indigo-600 hover:bg-indigo-700 hover:scale-[1.02] text-white cursor-pointer"
                             : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }`}
                 >
-                    {quotation.status === "pending"
-                        ? "Respond to Quotation"
-                        : "Already Responded"}
+                    {getActionButtonLabel(quotation.status)}
                 </button>
 
             </div>
