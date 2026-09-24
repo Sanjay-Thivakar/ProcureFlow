@@ -7,7 +7,7 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
         switch (status) {
 
             case "pending":
-                return "bg-yellow-100 text-yellow-700";
+                return "bg-amber-100 text-amber-700";
 
             case "quoted":
                 return "bg-blue-100 text-blue-700";
@@ -22,10 +22,10 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
                 return "bg-orange-100 text-orange-700";
 
             case "declined":
-                return "bg-gray-100 text-gray-700";
+                return "bg-red-100 text-red-700";
 
             default:
-                return "bg-gray-100 text-gray-700";
+                return "bg-slate-100 text-slate-700";
         }
 
     };
@@ -59,12 +59,9 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
     };
 
-    
-
-
     return (
 
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300 flex flex-col h-full">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
 
             {/* Header */}
 
@@ -72,11 +69,11 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
                 <div>
 
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-800">
                         {quotation.product?.name}
                     </h2>
 
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-slate-500 mt-1">
                         Quotation Request
                     </p>
 
@@ -98,11 +95,11 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
                 <div>
 
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Restaurant
                     </p>
 
-                    <p className="font-medium text-gray-800 mt-1">
+                    <p className="font-semibold text-slate-800 mt-1">
                         {quotation.restaurant?.name}
                     </p>
 
@@ -110,11 +107,11 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
                 <div>
 
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Quantity
                     </p>
 
-                    <p className="font-medium text-gray-800 mt-1">
+                    <p className="font-semibold text-slate-800 mt-1">
                         {quotation.quantity}
                     </p>
 
@@ -122,11 +119,11 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
                 <div>
 
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Required By
                     </p>
 
-                    <p className="font-medium text-gray-800 mt-1">
+                    <p className="font-semibold text-slate-800 mt-1">
                         {new Date(
                             quotation.requiredBy
                         ).toLocaleDateString("en-IN", {
@@ -140,11 +137,11 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
                 <div>
 
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Status
                     </p>
 
-                    <p className="font-medium capitalize text-gray-800 mt-1">
+                    <p className="font-semibold capitalize text-slate-800 mt-1">
                         {quotation.status}
                     </p>
 
@@ -156,18 +153,18 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
             <div className="px-6 mt-6">
 
-                <p className="text-xs uppercase tracking-wide text-gray-400 mb-2">
+                <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
                     Restaurant Note
                 </p>
 
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 min-h-[72px] flex items-center">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 min-h-[72px] flex items-center">
 
-                    <p className="text-sm text-gray-700 leading-relaxed">
+                    <p className="text-sm text-slate-700 leading-relaxed">
 
                         {quotation.message?.trim()
                             ? quotation.message
                             : (
-                                <span className="italic text-gray-400">
+                                <span className="italic text-slate-400">
                                     No special instructions provided.
                                 </span>
                             )
@@ -181,7 +178,7 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
             {/* Footer */}
 
-            <div className="mt-6 border-t border-gray-200 bg-gray-50 rounded-b-xl p-5">
+            <div className="mt-6 border-t border-slate-200 bg-slate-50 rounded-b-2xl p-5">
 
                 <button
                     onClick={() => onRespond(quotation)}

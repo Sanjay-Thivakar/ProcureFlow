@@ -1,12 +1,12 @@
 const BrowseProductCard = ({ product,selected,disabled,onToggleSelect }) => {
     return (
         <div
-            className={`rounded-xl shadow-sm p-6 transition-all duration-300 ${
+            className={`rounded-2xl shadow-sm p-6 transition-all duration-300 ${
                 disabled
-                    ? "bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed"
+                    ? "bg-slate-50 border border-slate-200 opacity-60 cursor-not-allowed"
                     : selected
                     ? "border-2 border-green-600 bg-green-50 shadow-lg"
-                    : "border border-gray-200 bg-white hover:shadow-lg hover:-translate-y-1"
+                    : "border border-slate-200 bg-white hover:shadow-lg"
             }`}
         >
 
@@ -15,11 +15,11 @@ const BrowseProductCard = ({ product,selected,disabled,onToggleSelect }) => {
 
                 <div>
 
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-800">
                         {product.name}
                     </h2>
 
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-slate-500 mt-1">
                         {product.category}
                     </p>
 
@@ -39,7 +39,7 @@ const BrowseProductCard = ({ product,selected,disabled,onToggleSelect }) => {
                         )
                     }
 
-                    <span className="bg-green-100 text-green-700 text-sm font-semibold px-3 py-1 rounded-full">
+                    <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
 
                         {product.stock} {product.unit}
 
@@ -52,7 +52,7 @@ const BrowseProductCard = ({ product,selected,disabled,onToggleSelect }) => {
             {
                 disabled && (
 
-                    <div className="mt-4 mb-4 rounded-lg bg-yellow-100 text-yellow-700 text-sm px-4 py-2">
+                    <div className="mt-4 mb-4 rounded-lg bg-amber-100 text-amber-700 text-sm px-4 py-2">
 
                         Finish your current RFQ before selecting another product.
 
@@ -65,18 +65,18 @@ const BrowseProductCard = ({ product,selected,disabled,onToggleSelect }) => {
             <div className="grid grid-cols-2 gap-y-5 gap-x-8">
 
                 <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Supplier
                     </p>
 
-                    <p className="font-semibold text-gray-900 mt-1">
+                    <p className="font-semibold text-slate-800 mt-1">
                         {product.supplier?.name}
                     </p>
                 </div>
 
                 <div>
 
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Price
                     </p>
 
@@ -84,7 +84,7 @@ const BrowseProductCard = ({ product,selected,disabled,onToggleSelect }) => {
                         ₹{product.price}
                     </p>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-slate-500">
                         per {product.unit}
                     </p>
 

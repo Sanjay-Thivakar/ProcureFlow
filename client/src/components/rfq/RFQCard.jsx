@@ -24,7 +24,7 @@ const RFQCard = ({ rfq, onViewResponses }) => {
         if (!hasPending && !hasActiveQuoted) {
             return {
                 text: "Expired",
-                color: "bg-red-100 text-red-700",
+                color: "bg-orange-100 text-orange-700",
             };
         }
 
@@ -37,7 +37,7 @@ const RFQCard = ({ rfq, onViewResponses }) => {
 
         return {
             text: "Waiting for Suppliers",
-            color: "bg-yellow-100 text-yellow-700",
+            color: "bg-amber-100 text-amber-700",
         };
     };
 
@@ -45,7 +45,7 @@ const RFQCard = ({ rfq, onViewResponses }) => {
 
     return (
 
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex flex-col">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex flex-col">
 
             {/* Header */}
 
@@ -53,11 +53,11 @@ const RFQCard = ({ rfq, onViewResponses }) => {
 
                 <div>
 
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-800">
                         {rfq.productName}
                     </h2>
 
-                    <p className="text-gray-500 text-sm mt-1">
+                    <p className="text-slate-500 text-sm mt-1">
                         Procurement Request
                     </p>
 
@@ -75,49 +75,49 @@ const RFQCard = ({ rfq, onViewResponses }) => {
 
             <div className="space-y-3">
 
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
 
-                    <span className="text-gray-500">
+                    <span className="text-xs uppercase tracking-wide text-slate-400">
                         Quantity
                     </span>
 
-                    <span className="font-semibold">
+                    <span className="font-semibold text-slate-800">
                         {rfq.quantity} {rfq.unit}
                     </span>
 
                 </div>
 
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
 
-                    <span className="text-gray-500">
+                    <span className="text-xs uppercase tracking-wide text-slate-400">
                         Required By
                     </span>
 
-                    <span className="font-semibold">
+                    <span className="font-semibold text-slate-800">
                         {new Date(rfq.requiredBy).toLocaleDateString()}
                     </span>
 
                 </div>
 
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
 
-                    <span className="text-gray-500">
+                    <span className="text-xs uppercase tracking-wide text-slate-400">
                         Suppliers Invited
                     </span>
 
-                    <span className="font-semibold">
+                    <span className="font-semibold text-slate-800">
                         {rfq.quotations.length}
                     </span>
 
                 </div>
 
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
 
-                    <span className="text-gray-500">
+                    <span className="text-xs uppercase tracking-wide text-slate-400">
                         Responses
                     </span>
 
-                    <span className="font-semibold">
+                    <span className="font-semibold text-slate-800">
 
                         {responsesReceived} / {rfq.quotations.length}
 

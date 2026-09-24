@@ -19,7 +19,7 @@ const QuotationCard = ({ quotation,onSuccess }) => {
     const getStatusStyles = (status) => {
         switch (status) {
             case "pending":
-                return "bg-yellow-100 text-yellow-700";
+                return "bg-amber-100 text-amber-700";
 
             case "quoted":
                 return "bg-blue-100 text-blue-700";
@@ -31,13 +31,13 @@ const QuotationCard = ({ quotation,onSuccess }) => {
                 return "bg-red-100 text-red-700";
 
             case "declined":
-                return "bg-gray-100 text-gray-700";
+                return "bg-red-100 text-red-700";
 
             case "expired":
                 return "bg-orange-100 text-orange-700";
 
             default:
-                return "bg-gray-100 text-gray-700";
+                return "bg-slate-100 text-slate-700";
         }
     };
 
@@ -88,17 +88,17 @@ const QuotationCard = ({ quotation,onSuccess }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col h-full">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex flex-col h-full">
 
             {/* Header */}
             <div className="flex justify-between items-start mb-6">
 
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-800">
                         {quotation.product?.name}
                     </h2>
 
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-slate-500 mt-1">
                         Procurement Quotation
                     </p>
                 </div>
@@ -117,31 +117,31 @@ const QuotationCard = ({ quotation,onSuccess }) => {
             <div className="grid grid-cols-2 gap-y-5 gap-x-8">
 
                 <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Supplier
                     </p>
 
-                    <p className="font-medium text-gray-800 mt-1">
+                    <p className="font-semibold text-slate-800 mt-1">
                         {quotation.supplier?.name}
                     </p>
                 </div>
 
                 <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Quantity
                     </p>
 
-                    <p className="font-medium text-gray-800 mt-1">
+                    <p className="font-semibold text-slate-800 mt-1">
                         {quotation.quantity}
                     </p>
                 </div>
 
                 <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Required By
                     </p>
 
-                    <p className="font-medium text-gray-800 mt-1">
+                    <p className="font-semibold text-slate-800 mt-1">
                         {new Date(
                             quotation.requiredBy
                         ).toLocaleDateString()}
@@ -149,11 +149,11 @@ const QuotationCard = ({ quotation,onSuccess }) => {
                 </div>
 
                 <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
                         Status
                     </p>
 
-                    <p className="font-medium capitalize text-gray-800 mt-1">
+                    <p className="font-semibold capitalize text-slate-800 mt-1">
                         {isExpired ? "expired" : quotation.status}
                     </p>
                 </div>
@@ -165,13 +165,13 @@ const QuotationCard = ({ quotation,onSuccess }) => {
 
                 <div className="mt-6">
 
-                    <p className="text-xs uppercase tracking-wide text-gray-400 mb-2">
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
                         Restaurant Note
                     </p>
 
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
 
-                        <p className="text-sm text-gray-700 leading-relaxed">
+                        <p className="text-sm text-slate-700 leading-relaxed">
                             {quotation.message}
                         </p>
 
@@ -184,15 +184,15 @@ const QuotationCard = ({ quotation,onSuccess }) => {
             {/* Supplier Response (Future Ready) */}
             {quotation.status !== "pending" && (
 
-                <div className="mt-6 border-t pt-5 flex flex-col flex-1">
+                <div className="mt-6 border-t border-slate-200 pt-5 flex flex-col flex-1">
 
                     {quotation.quotedPrice && (
                         <div className="flex justify-between mb-3">
-                            <span className="text-gray-500">
+                            <span className="text-slate-500">
                                 Quoted Price
                             </span>
 
-                            <span className="font-semibold">
+                            <span className="font-semibold text-slate-800">
                                 ₹{quotation.quotedPrice}
                             </span>
                         </div>
@@ -200,11 +200,11 @@ const QuotationCard = ({ quotation,onSuccess }) => {
 
                     {quotation.discountPercentage && (
                         <div className="flex justify-between mb-3">
-                            <span className="text-gray-500">
+                            <span className="text-slate-500">
                                 Discount
                             </span>
 
-                            <span className="font-semibold">
+                            <span className="font-semibold text-slate-800">
                                 {quotation.discountPercentage}%
                             </span>
                         </div>
@@ -212,11 +212,11 @@ const QuotationCard = ({ quotation,onSuccess }) => {
 
                     {quotation.estimatedDelivery && (
                         <div className="flex justify-between mb-3">
-                            <span className="text-gray-500">
+                            <span className="text-slate-500">
                                 Estimated Delivery
                             </span>
 
-                            <span className="font-semibold">
+                            <span className="font-semibold text-slate-800">
                                 {new Date(quotation.estimatedDelivery).toLocaleDateString()}
                             </span>
                         </div>
@@ -225,13 +225,13 @@ const QuotationCard = ({ quotation,onSuccess }) => {
                     {quotation.supplierNote && (
                         <div className="mt-4">
 
-                            <p className="text-xs uppercase tracking-wide text-gray-400 mb-2">
+                            <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
                                 Supplier Note
                             </p>
 
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
 
-                                <p className="text-sm text-gray-700">
+                                <p className="text-sm text-slate-700">
                                     {quotation.supplierNote}
                                 </p>
 

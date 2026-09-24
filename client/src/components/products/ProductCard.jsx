@@ -7,7 +7,7 @@ const ProductCard = ({
 }) => {
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300">
 
             {/* Header */}
             <div className="flex justify-between items-start p-6">
@@ -82,7 +82,7 @@ const ProductCard = ({
                     </p>
 
                     <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             product.stock > 0
                                 ? "bg-green-100 text-green-700"
                                 : "bg-red-100 text-red-700"

@@ -14,31 +14,31 @@ const OrderCard = ({ order, onSuccess }) => {
         switch (status) {
 
             case "pending_supplier_confirmation":
-                return "bg-yellow-100 text-yellow-700";
+                return "bg-amber-100 text-amber-700";
 
             case "confirmed":
-                return "bg-green-100 text-green-700";
+                return "bg-blue-100 text-blue-700";
 
             case "rejected":
                 return "bg-red-100 text-red-700";
 
             case "shipped":
-                return "bg-blue-100 text-blue-700";
+                return "bg-purple-100 text-purple-700";
 
             case "completed":
-                return "bg-emerald-100 text-emerald-700";
+                return "bg-green-100 text-green-700";
             
             case "preparing":
-                return "bg-blue-100 text-blue-700";
+                return "bg-purple-100 text-purple-700";
 
             case "out_for_delivery":
                 return "bg-purple-100 text-purple-700";
 
             case "delivered":
-                return "bg-emerald-100 text-emerald-700";
+                return "bg-green-100 text-green-700";
 
             default:
-                return "bg-gray-100 text-gray-700";
+                return "bg-slate-100 text-slate-700";
 
         }
 
@@ -156,7 +156,7 @@ const OrderCard = ({ order, onSuccess }) => {
 
     return (
 
-        <div className="bg-white border rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex flex-col">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex flex-col">
 
             {/* Header */}
 
@@ -164,13 +164,13 @@ const OrderCard = ({ order, onSuccess }) => {
 
                 <div>
 
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-800">
 
                         {order.productName}
 
                     </h2>
 
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-slate-500 mt-1">
 
                         Restaurant Procurement Order
 
@@ -190,15 +190,15 @@ const OrderCard = ({ order, onSuccess }) => {
 
             {/* Restaurant */}
 
-            <div className="border-t pt-4">
+            <div className="border-t border-slate-100 pt-4">
 
-                <p className="text-xs uppercase tracking-wide text-gray-400">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
 
                     Restaurant
 
                 </p>
 
-                <p className="font-semibold text-gray-800 mt-1">
+                <p className="font-semibold text-slate-800 mt-1">
 
                     {order.restaurant?.name}
 
@@ -208,15 +208,15 @@ const OrderCard = ({ order, onSuccess }) => {
 
             {/* Quantity */}
 
-            <div className="border-t pt-4 mt-4">
+            <div className="border-t border-slate-100 pt-4 mt-4">
 
-                <p className="text-xs uppercase tracking-wide text-gray-400">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
 
                     Quantity
 
                 </p>
 
-                <p className="font-semibold text-gray-800 mt-1">
+                <p className="font-semibold text-slate-800 mt-1">
 
                     {order.quantity} {order.unit}
 
@@ -226,15 +226,15 @@ const OrderCard = ({ order, onSuccess }) => {
 
             {/* Unit Price */}
 
-            <div className="border-t pt-4 mt-4">
+            <div className="border-t border-slate-100 pt-4 mt-4">
 
-                <p className="text-xs uppercase tracking-wide text-gray-400">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
 
                     Agreed Price
 
                 </p>
 
-                <p className="font-semibold text-gray-800 mt-1">
+                <p className="font-semibold text-slate-800 mt-1">
 
                     ₹{order.agreedPrice}
 
@@ -244,9 +244,9 @@ const OrderCard = ({ order, onSuccess }) => {
 
             {/* Total */}
 
-            <div className="border-t pt-4 mt-4">
+            <div className="border-t border-slate-100 pt-4 mt-4">
 
-                <p className="text-xs uppercase tracking-wide text-gray-400">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
 
                     Total Amount
 
@@ -262,17 +262,17 @@ const OrderCard = ({ order, onSuccess }) => {
 
             {/* Payment Status */}
 
-            <div className="border-t pt-4 mt-4">
+            <div className="border-t border-slate-100 pt-4 mt-4">
 
-                <p className="text-xs uppercase tracking-wide text-gray-400">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
                     Payment Status
                 </p>
 
                 {order.orderStatus === "rejected" || order.orderStatus === "cancelled" ? (
 
-                    <div className="flex items-center gap-2 mt-2 text-gray-500 font-semibold">
+                    <div className="flex items-center gap-2 mt-2 text-slate-500 font-semibold">
 
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-500 text-xs">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs">
                             —
                         </span>
 
@@ -294,9 +294,9 @@ const OrderCard = ({ order, onSuccess }) => {
 
                 ) : (
 
-                    <div className="flex items-center gap-2 mt-2 text-yellow-600 font-semibold">
+                    <div className="flex items-center gap-2 mt-2 text-amber-600 font-semibold">
 
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-amber-100">
                             !
                         </span>
 
@@ -310,15 +310,15 @@ const OrderCard = ({ order, onSuccess }) => {
 
             {/* Delivery */}
 
-            <div className="border-t pt-4 mt-4">
+            <div className="border-t border-slate-100 pt-4 mt-4">
 
-                <p className="text-xs uppercase tracking-wide text-gray-400">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
 
                     Estimated Delivery
 
                 </p>
 
-                <p className="font-semibold text-gray-800 mt-1">
+                <p className="font-semibold text-slate-800 mt-1">
 
                     {order.estimatedDelivery
                         ? new Date(order.estimatedDelivery).toLocaleDateString()
