@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import ProductHeader from "../../components/products/ProductHeader";
 import ProductCard from "../../components/products/ProductCard";
@@ -95,9 +96,13 @@ const Products = () => {
                     formData
                 );
 
+                toast.success("Product updated successfully!");
+
             } else {
 
                 await createProduct(formData);
+
+                toast.success("Product created successfully!");
 
             }
 
@@ -109,6 +114,11 @@ const Products = () => {
 
             console.error(error);
 
+            toast.error(
+                error.response?.data?.message ||
+                (selectedProduct ? "Failed to update product." : "Failed to create product.")
+            );
+
         }
 
     };
@@ -119,6 +129,8 @@ const Products = () => {
 
             await deleteProduct(selectedProduct._id);
 
+            toast.success("Product deleted successfully!");
+
             await fetchProducts();
 
             handleCloseDeleteModal();
@@ -126,6 +138,11 @@ const Products = () => {
         } catch (error) {
 
             console.error(error);
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to delete product."
+            );
 
         }
 
