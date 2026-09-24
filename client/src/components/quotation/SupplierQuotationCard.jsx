@@ -183,10 +183,10 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
                 <button
                     onClick={() => onRespond(quotation)}
                     disabled={quotation.status !== "pending"}
-                    className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
+                    className={`w-full rounded-xl py-2.5 px-4 font-medium transition duration-200 ${
                         quotation.status === "pending"
-                            ? "bg-indigo-600 hover:bg-indigo-700 hover:scale-[1.02] text-white cursor-pointer"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+                            : "bg-slate-200 text-slate-400 cursor-not-allowed"
                     }`}
                 >
                     {getActionButtonLabel(quotation.status)}

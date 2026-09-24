@@ -174,7 +174,7 @@ const BrowseProducts = () => {
 
                 </div>
 
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-6">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
 
                     <div className="flex flex-col lg:flex-row gap-4">
 
@@ -185,7 +185,7 @@ const BrowseProducts = () => {
                             placeholder="🔍 Search products..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                         />
 
                         {/* Category */}
@@ -193,7 +193,7 @@ const BrowseProducts = () => {
                         <select
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition bg-white"
                         >
 
                             {categories.map(category => (
@@ -214,7 +214,7 @@ const BrowseProducts = () => {
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
-                            className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition bg-white"
                         >
 
                             <option value="default">
@@ -253,7 +253,7 @@ const BrowseProducts = () => {
 
                             }}
 
-                            className="px-5 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition"
+                            className="rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 font-medium transition duration-200"
 
                         >
 
@@ -265,17 +265,17 @@ const BrowseProducts = () => {
 
                 </div>
 
-                <div className="flex justify-between items-center bg-white border rounded-xl p-5 mb-8">
+                <div className="flex justify-between items-center bg-white border border-slate-200 rounded-2xl p-5 mb-8">
 
                     <div>
 
-                        <h2 className="text-lg font-semibold">
+                        <h2 className="text-lg font-semibold text-slate-800">
 
                             Supplier Listings
 
                         </h2>
 
-                        <p className="text-gray-500">
+                        <p className="text-slate-500">
 
                             {filteredProducts.length} Available
 
@@ -291,7 +291,7 @@ const BrowseProducts = () => {
 
                         </h2>
 
-                        <p className="text-gray-500">
+                        <p className="text-slate-500">
 
                             
                             {selectedProducts.length}
@@ -357,7 +357,7 @@ const BrowseProducts = () => {
 
                             <button
                                 onClick={() => setIsRFQModalOpen(true)}
-                                className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl shadow-xl font-semibold"
+                                className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl shadow-xl font-semibold transition duration-200"
                             >
 
                                 Create RFQ ({selectedProducts.length} Suppliers)

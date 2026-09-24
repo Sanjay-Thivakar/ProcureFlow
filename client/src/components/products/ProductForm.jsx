@@ -109,7 +109,7 @@ const ProductForm = ({
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Enter product name"
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                 />
             </div>
 
@@ -124,7 +124,7 @@ const ProductForm = ({
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                 >
                     <option value="">Select Category</option>
 
@@ -150,7 +150,7 @@ const ProductForm = ({
                     name="unit"
                     value={formData.unit}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                 >
                     <option value="">Select Unit</option>
 
@@ -180,7 +180,7 @@ const ProductForm = ({
                         name="price"
                         value={formData.price}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                     />
                 </div>
 
@@ -195,7 +195,7 @@ const ProductForm = ({
                         name="stock"
                         value={formData.stock}
                         onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                     />
                 </div>
 
@@ -208,14 +208,14 @@ const ProductForm = ({
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="rounded-xl border border-slate-300 px-5 py-2.5 font-medium text-slate-700 hover:bg-slate-100"
+                    className="rounded-xl border border-slate-300 px-5 py-2.5 font-medium text-slate-700 hover:bg-slate-100 transition duration-200"
                 >
                     Cancel
                 </button>
 
                 <button
                     type="submit"
-                    className="rounded-xl bg-indigo-600 px-5 py-2.5 font-medium text-white hover:bg-indigo-700"
+                    className="rounded-xl bg-indigo-600 px-5 py-2.5 font-medium text-white hover:bg-indigo-700 transition duration-200"
                 >
                     {initialData ? "Update Product" : "Save Product"}
                 </button>

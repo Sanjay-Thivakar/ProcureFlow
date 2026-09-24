@@ -247,14 +247,14 @@ const QuotationCard = ({ quotation,onSuccess }) => {
 
                             <button
                                 onClick={handleAccept}
-                                className="flex-1 bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                                className="flex-1 rounded-xl py-2.5 px-4 font-medium bg-green-600 text-white hover:bg-green-700 transition duration-200"
                             >
                                 Award Supplier
                             </button>
 
                             <button
                                 onClick={handleReject}
-                                className="flex-1 bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                                className="flex-1 rounded-xl py-2.5 px-4 font-medium bg-red-600 text-white hover:bg-red-700 transition duration-200"
                             >
                                 Reject Quote
                             </button>

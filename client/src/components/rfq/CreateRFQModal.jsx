@@ -27,19 +27,19 @@ const CreateRFQModal = ({
 
     return (
 
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
 
-            <div className="bg-white rounded-2xl w-full max-w-lg p-8 shadow-xl">
+            <div className="bg-white rounded-2xl w-full max-w-lg p-8 shadow-2xl">
 
-                <h2 className="text-2xl font-bold mb-2">
+                <h2 className="text-2xl font-bold text-slate-800 mb-2">
 
                     Create RFQ
 
                 </h2>
 
-                <p className="text-gray-500 mb-6">
+                <p className="text-slate-500 mb-6">
 
-                    You have selected <strong>{selectedCount}</strong> supplier listings.
+                    You have selected <strong className="text-slate-800">{selectedCount}</strong> supplier listings.
 
                 </p>
 
@@ -50,7 +50,7 @@ const CreateRFQModal = ({
 
                     <div>
 
-                        <label className="block text-sm font-medium mb-2">
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
 
                             Quantity
 
@@ -64,14 +64,14 @@ const CreateRFQModal = ({
                             onChange={(e) =>
                                 setQuantity(e.target.value)
                             }
-                            className="w-full border rounded-lg px-4 py-3"
+                            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                         />
 
                     </div>
 
                     <div>
 
-                        <label className="block text-sm font-medium mb-2">
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
 
                             Required By
 
@@ -84,14 +84,14 @@ const CreateRFQModal = ({
                             onChange={(e) =>
                                 setRequiredBy(e.target.value)
                             }
-                            className="w-full border rounded-lg px-4 py-3"
+                            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                         />
 
                     </div>
 
                     <div>
 
-                        <label className="block text-sm font-medium mb-2">
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
 
                             Message (Optional)
 
@@ -103,7 +103,7 @@ const CreateRFQModal = ({
                             onChange={(e) =>
                                 setMessage(e.target.value)
                             }
-                            className="w-full border rounded-lg px-4 py-3"
+                            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                             placeholder="Additional requirements..."
                         />
 
@@ -114,7 +114,7 @@ const CreateRFQModal = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-5 py-3 rounded-lg border"
+                            className="rounded-xl border border-slate-300 px-5 py-2.5 font-medium text-slate-700 hover:bg-slate-100 transition duration-200"
                         >
 
                             Cancel
@@ -123,7 +123,7 @@ const CreateRFQModal = ({
 
                         <button
                             type="submit"
-                            className="px-5 py-3 rounded-lg bg-green-600 text-white hover:bg-green-700"
+                            className="rounded-xl bg-green-600 px-5 py-2.5 font-medium text-white hover:bg-green-700 transition duration-200"
                         >
 
                             Create RFQ

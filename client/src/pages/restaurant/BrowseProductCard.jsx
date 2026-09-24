@@ -95,10 +95,10 @@ const BrowseProductCard = ({ product,selected,disabled,onToggleSelect }) => {
             <button
                 onClick={() => onToggleSelect(product)}
                 disabled={disabled}
-                className={`mt-8 w-full font-semibold py-3 rounded-lg transition-colors duration-200 ${
+                className={`mt-8 w-full rounded-xl py-2.5 px-4 font-medium transition duration-200 ${
                      disabled
 
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        ? "bg-slate-200 text-slate-400 cursor-not-allowed"
 
                     : selected
 

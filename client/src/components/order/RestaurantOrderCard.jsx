@@ -343,7 +343,7 @@ const RestaurantOrderCard = ({ order,onPaymentSuccess }) => {
                             <button
                                 onClick={handlePayment}
                                 disabled={paymentLoading}
-                                className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="rounded-xl px-5 py-2.5 bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
 
                                 {paymentLoading

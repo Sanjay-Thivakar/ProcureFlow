@@ -340,14 +340,14 @@ const OrderCard = ({ order, onSuccess }) => {
 
                         <button
                             onClick={handleAccept}
-                            className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"
+                            className="flex-1 rounded-xl py-2.5 px-4 font-medium bg-green-600 text-white hover:bg-green-700 transition duration-200"
                         >
                             Accept Order
                         </button>
 
                         <button
                             onClick={handleReject}
-                            className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition"
+                            className="flex-1 rounded-xl py-2.5 px-4 font-medium bg-red-600 text-white hover:bg-red-700 transition duration-200"
                         >
                             Reject Order
                         </button>
@@ -364,7 +364,7 @@ const OrderCard = ({ order, onSuccess }) => {
                         onClick={() =>
                             handleStatusUpdate("preparing")
                         }
-                        className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                        className="w-full rounded-xl py-2.5 px-4 font-medium bg-blue-600 text-white hover:bg-blue-700 transition duration-200"
                     >
                         Start Preparing
                     </button>
@@ -379,7 +379,7 @@ const OrderCard = ({ order, onSuccess }) => {
                         onClick={() =>
                             handleStatusUpdate("out_for_delivery")
                         }
-                        className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition"
+                        className="w-full rounded-xl py-2.5 px-4 font-medium bg-purple-600 text-white hover:bg-purple-700 transition duration-200"
                     >
                         Out For Delivery
                     </button>
@@ -394,7 +394,7 @@ const OrderCard = ({ order, onSuccess }) => {
                         onClick={() =>
                             handleStatusUpdate("delivered")
                         }
-                        className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition"
+                        className="w-full rounded-xl py-2.5 px-4 font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition duration-200"
                     >
                         Mark Delivered
                     </button>
@@ -405,7 +405,7 @@ const OrderCard = ({ order, onSuccess }) => {
 
                 {order.orderStatus === "delivered" && (
 
-                    <div className="bg-green-100 text-green-700 text-center py-3 rounded-lg font-semibold">
+                    <div className="rounded-xl py-2.5 px-4 bg-green-100 text-green-700 text-center font-semibold">
 
                         ✓ Order Delivered
 

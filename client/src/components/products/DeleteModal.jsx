@@ -66,14 +66,14 @@ const DeleteModal = ({
 
                     <button
                         onClick={onClose}
-                        className="rounded-xl border border-slate-300 px-5 py-2.5 font-medium text-slate-700 hover:bg-slate-100"
+                        className="rounded-xl border border-slate-300 px-5 py-2.5 font-medium text-slate-700 hover:bg-slate-100 transition duration-200"
                     >
                         Cancel
                     </button>
 
                     <button
                         onClick={onConfirm}
-                        className="rounded-xl bg-red-600 px-5 py-2.5 font-medium text-white hover:bg-red-700"
+                        className="rounded-xl bg-red-600 px-5 py-2.5 font-medium text-white hover:bg-red-700 transition duration-200"
                     >
                         Delete
                     </button>
