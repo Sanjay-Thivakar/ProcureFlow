@@ -160,20 +160,16 @@ const BrowseProducts = () => {
     return (
         <RestaurantLayout>
 
-            <div className="p-8">
+            <div>
 
                 <div className="mb-8">
 
-                    <h1 className="text-3xl font-bold">
-
+                    <h1 className="text-3xl font-bold text-slate-800">
                         Browse Products
-
                     </h1>
 
-                    <p className="text-gray-500 mt-2">
-
+                    <p className="mt-2 text-slate-500">
                         Compare supplier listings and create a Request for Quotation.
-
                     </p>
 
                 </div>

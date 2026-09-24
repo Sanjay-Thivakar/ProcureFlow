@@ -5,6 +5,7 @@ import { ClipboardList } from "lucide-react";
 import SupplierLayout from "../../components/layout/supplier/SupplierLayout";
 import OrderCard from "../../components/order/OrderCard";
 import EmptyState from "../../components/ui/EmptyState";
+import Loader from "../../components/common/Loader";
 
 import { getSupplierOrders } from "../../services/orderService";
 
@@ -46,57 +47,48 @@ const SupplierOrders = () => {
 
         <SupplierLayout>
 
-            <div className="p-6">
-
-                <h1 className="text-3xl font-bold mb-6">
-
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-slate-800">
                     My Orders
-
                 </h1>
-
-                {
-
-                    loading ? (
-
-                        <div className="text-center text-gray-500">
-
-                            Loading orders...
-
-                        </div>
-
-                    ) : orders.length === 0 ? (
-
-                        <EmptyState
-                            title="No orders yet"
-                            description="Orders placed by restaurants will appear here."
-                            icon={ClipboardList}
-                        />
-
-                    ) : (
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                            {
-
-                                orders.map((order) => (
-
-                                    <OrderCard
-                                        key={order._id}
-                                        order={order}
-                                        onSuccess={fetchOrders}
-                                    />
-
-                                ))
-
-                            }
-
-                        </div>
-
-                    )
-
-                }
-
+                <p className="mt-2 text-slate-500">
+                    Manage and fulfill orders placed by restaurants.
+                </p>
             </div>
+
+            {
+                loading ? (
+
+                    <Loader />
+
+                ) : orders.length === 0 ? (
+
+                    <EmptyState
+                        title="No orders yet"
+                        description="Orders placed by restaurants will appear here."
+                        icon={ClipboardList}
+                    />
+
+                ) : (
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                        {
+                            orders.map((order) => (
+
+                                <OrderCard
+                                    key={order._id}
+                                    order={order}
+                                    onSuccess={fetchOrders}
+                                />
+
+                            ))
+                        }
+
+                    </div>
+
+                )
+            }
 
         </SupplierLayout>
 

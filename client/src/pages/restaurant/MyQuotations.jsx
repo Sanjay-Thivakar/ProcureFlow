@@ -7,6 +7,7 @@ import RFQDetailsModal from "../../components/rfq/RFQDetailsModal";
 import RFQCard from "../../components/rfq/RFQCard";
 import RFQResponsesModal from "../../components/rfq/RFQResponsesModal";
 import EmptyState from "../../components/ui/EmptyState";
+import Loader from "../../components/common/Loader";
 
 import { getRestaurantRFQs } from "../../services/rfqService";
 import { getRFQDetails } from "../../services/rfqService";
@@ -169,13 +170,18 @@ const MyQuotation = () => {
     return (
         <RestaurantLayout>
 
-            <div className="p-6">
+            <div>
 
-                <h1 className="text-3xl font-bold mb-6">
-                    My RFQs
-                </h1>
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-slate-800">
+                        My Quotations
+                    </h1>
+                    <p className="mt-2 text-slate-500">
+                        Track and review quotations received for your RFQs.
+                    </p>
+                </div>
 
-                <div className="flex flex-wrap gap-3 mt-6 mb-10">
+                <div className="flex flex-wrap gap-3 mb-8">
 
                     <button
                         onClick={() => setActiveFilter("all")}
@@ -244,9 +250,7 @@ const MyQuotation = () => {
 
                 {loading ? (
 
-                    <div className="text-center text-gray-500">
-                        Loading quotations...
-                    </div>
+                    <Loader />
 
                 ) : filteredRFQs.length === 0 ? (
 

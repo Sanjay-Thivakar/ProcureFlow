@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 
 import ProductHeader from "../../components/products/ProductHeader";
 import ProductCard from "../../components/products/ProductCard";
-import EmptyState from "../../components/products/EmptyState";
+import EmptyState from "../../components/ui/EmptyState";
+import { Package } from "lucide-react";
 import DashboardLayout from "../../components/layout/supplier/SupplierLayout";
 import ProductModal from "../../components/products/ProductModal";
 import DeleteModal from "../../components/products/DeleteModal";
@@ -150,7 +151,7 @@ const Products = () => {
 
     return (
         <DashboardLayout>
-            <div className="p-8">
+            <div>
 
                 <ProductHeader
                     searchTerm={searchTerm}
@@ -161,7 +162,11 @@ const Products = () => {
                 {loading ? (
                     <Loader />
                 ) : filteredProducts.length === 0 ? (
-                    <EmptyState />
+                    <EmptyState
+                        icon={Package}
+                        title="No products found"
+                        description="Click 'Add Product' to create your first product."
+                    />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 

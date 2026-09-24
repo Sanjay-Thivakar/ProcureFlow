@@ -6,6 +6,7 @@ import SupplierLayout from "../../components/layout/supplier/SupplierLayout";
 import SupplierQuotationCard from "../../components/quotation/SupplierQuotationCard";
 import RespondQuotationModal from "../../components/quotation/RespondQuotationModal";
 import EmptyState from "../../components/ui/EmptyState";
+import Loader from "../../components/common/Loader";
 
 import { getSupplierQuotations } from "../../services/quotationService";
 
@@ -73,51 +74,45 @@ const SupplierQuotations = () => {
 
         <SupplierLayout>
 
-            <div className="p-8">
-
-                <h1 className="text-4xl font-bold text-gray-900">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-slate-800">
                     Incoming Quotations
                 </h1>
 
-                <p className="text-gray-500 mt-2">
+                <p className="mt-2 text-slate-500">
                     Review quotation requests received from restaurants.
                 </p>
-
-                {loading ? (
-
-                    <div className="mt-8 text-gray-500">
-                        Loading quotations...
-                    </div>
-
-                ) : quotations.length === 0 ? (
-
-                    <div className="mt-8">
-                        <EmptyState
-                            title="No quotations yet"
-                            description="Incoming quotation requests from restaurants will appear here."
-                            icon={FileText}
-                        />
-                    </div>
-
-                ) : (
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
-
-                        {sortedQuotations.map((quotation) => (
-
-                            <SupplierQuotationCard
-                                key={quotation._id}
-                                quotation={quotation}
-                                onRespond={handleRespond}
-                            />
-
-                        ))}
-
-                    </div>
-
-                )}
-
             </div>
+
+            {loading ? (
+
+                <Loader />
+
+            ) : quotations.length === 0 ? (
+
+                <EmptyState
+                    title="No quotations yet"
+                    description="Incoming quotation requests from restaurants will appear here."
+                    icon={FileText}
+                />
+
+            ) : (
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                    {sortedQuotations.map((quotation) => (
+
+                        <SupplierQuotationCard
+                            key={quotation._id}
+                            quotation={quotation}
+                            onRespond={handleRespond}
+                        />
+
+                    ))}
+
+                </div>
+
+            )}
 
             <RespondQuotationModal
                 isOpen={isModalOpen}

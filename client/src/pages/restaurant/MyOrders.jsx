@@ -46,20 +46,16 @@ const RestaurantOrders = () => {
 
         <RestaurantLayout>
 
-            <div className="p-6 space-y-6">
+            <div>
 
-                <div>
+                <div className="mb-8">
 
-                    <h1 className="text-3xl font-bold mb-4">
-
+                    <h1 className="text-3xl font-bold text-slate-800">
                         My Orders
-
                     </h1>
 
-                    <p className="text-gray-500">
-
-                        Orders placed with suppliers.
-
+                    <p className="mt-2 text-slate-500">
+                        Track and manage your orders placed with suppliers.
                     </p>
 
                 </div>

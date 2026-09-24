@@ -19,7 +19,7 @@ const ProductHeader = ({
                     </h1>
 
                     <p className="mt-2 text-slate-500">
-                        Manage your restaurant inventory.
+                        Manage your product catalog and inventory.
                     </p>
 
                 </div>
