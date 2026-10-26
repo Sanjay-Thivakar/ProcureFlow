@@ -84,6 +84,9 @@ const orderSchema = new mongoose.Schema(
                 "refunded"
             ],
             default: "pending"
+        },
+        deliveredAt: {
+            type: Date,
         }  
     },
     {

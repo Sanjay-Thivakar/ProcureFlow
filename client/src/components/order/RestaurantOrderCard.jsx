@@ -209,15 +209,46 @@ const RestaurantOrderCard = ({ order,onPaymentSuccess }) => {
 
                 </div>
 
-                <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusStyles(
-                        order.orderStatus
-                    )}`}
-                >
-                    {order.orderStatus.replaceAll("_", " ")}
-                </span>
+                <div className="flex flex-col items-end gap-1.5">
+                    {order.priority && (
+                        <span
+                            className={`px-2.5 py-0.5 rounded-full text-xs font-bold border capitalize ${
+                                order.priority === "Urgent"
+                                    ? "bg-rose-100 text-rose-700 border-rose-200"
+                                    : order.priority === "High"
+                                    ? "bg-amber-100 text-amber-800 border-amber-200"
+                                    : "bg-sky-100 text-sky-700 border-sky-200"
+                            }`}
+                        >
+                            {order.priority}
+                        </span>
+                    )}
+                    <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusStyles(
+                            order.orderStatus
+                        )}`}
+                    >
+                        {order.orderStatus.replaceAll("_", " ")}
+                    </span>
+                </div>
 
             </div>
+
+            {/* Priority Reason Alert Banner */}
+            {order.priorityReason && order.priority !== "Low" && (
+                <div
+                    className={`mb-5 p-2.5 rounded-xl text-xs flex items-center gap-2 border ${
+                        order.priority === "Urgent"
+                            ? "bg-rose-50 text-rose-800 border-rose-200 font-medium"
+                            : "bg-amber-50 text-amber-800 border-amber-200"
+                    }`}
+                >
+                    <span className="font-semibold uppercase tracking-wider text-[10px] px-1.5 py-0.5 rounded bg-white/70">
+                        Priority
+                    </span>
+                    <span className="line-clamp-2">{order.priorityReason}</span>
+                </div>
+            )}
 
             {/* Information Grid */}
 

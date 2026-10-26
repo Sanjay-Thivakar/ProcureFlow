@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const CreateRFQModal = ({
     isOpen,
     onClose,
     onSubmit,
     selectedCount,
+    initialQuantity = "",
 }) => {
 
-    const [quantity, setQuantity] = useState("");
+    const [quantity, setQuantity] = useState(initialQuantity ? String(initialQuantity) : "");
     const [requiredBy, setRequiredBy] = useState("");
     const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        if (isOpen && initialQuantity) {
+            setQuantity(String(initialQuantity));
+        }
+    }, [isOpen, initialQuantity]);
 
     if (!isOpen) return null;
 

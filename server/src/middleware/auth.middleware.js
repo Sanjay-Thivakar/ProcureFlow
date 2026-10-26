@@ -26,4 +26,16 @@ const protect = (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `Forbidden. Only [${roles.join(", ")}] can access this resource.`,
+      });
+    }
+    next();
+  };
+};
+
+module.exports = { protect, authorize };

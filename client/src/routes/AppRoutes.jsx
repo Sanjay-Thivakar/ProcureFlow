@@ -12,6 +12,7 @@ import Products from "../pages/supplier/Products";
 import BrowseProducts from '../pages/restaurant/BrowseProducts'
 
 import MyQuotation from "../pages/restaurant/MyQuotations";
+import SupplierReplenishment from "../pages/supplier/SmartReplenishment";
 import SupplierQuotations from "../pages/supplier/SupplierQuotations";
 
 import SupplierOrders from "../pages/supplier/MyOrders";
@@ -64,6 +65,15 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute allowedRoles={["restaurant"]}>
                             <MyQuotation />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/supplier/replenishment"
+                    element={
+                        <ProtectedRoute allowedRoles={["supplier"]}>
+                            <SupplierReplenishment />
                         </ProtectedRoute>
                     }
                 />

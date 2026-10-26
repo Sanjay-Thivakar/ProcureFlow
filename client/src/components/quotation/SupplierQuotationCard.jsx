@@ -79,15 +79,46 @@ const SupplierQuotationCard = ({ quotation, onRespond }) => {
 
                 </div>
 
-                <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusStyles(
-                        quotation.status
-                    )}`}
-                >
-                    {quotation.status}
-                </span>
+                <div className="flex flex-col items-end gap-1.5">
+                    {quotation.priority && (
+                        <span
+                            className={`px-2.5 py-0.5 rounded-full text-xs font-bold border capitalize ${
+                                quotation.priority === "Urgent"
+                                    ? "bg-rose-100 text-rose-700 border-rose-200"
+                                    : quotation.priority === "High"
+                                    ? "bg-amber-100 text-amber-800 border-amber-200"
+                                    : "bg-sky-100 text-sky-700 border-sky-200"
+                            }`}
+                        >
+                            {quotation.priority}
+                        </span>
+                    )}
+                    <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusStyles(
+                            quotation.status
+                        )}`}
+                    >
+                        {quotation.status}
+                    </span>
+                </div>
 
             </div>
+
+            {/* Priority Reason Alert Banner */}
+            {quotation.priorityReason && quotation.priority !== "Low" && (
+                <div
+                    className={`mx-6 mb-4 p-2.5 rounded-xl text-xs flex items-center gap-2 border ${
+                        quotation.priority === "Urgent"
+                            ? "bg-rose-50 text-rose-800 border-rose-200 font-medium"
+                            : "bg-amber-50 text-amber-800 border-amber-200"
+                    }`}
+                >
+                    <span className="font-semibold uppercase tracking-wider text-[10px] px-1.5 py-0.5 rounded bg-white/70">
+                        Priority
+                    </span>
+                    <span className="line-clamp-2">{quotation.priorityReason}</span>
+                </div>
+            )}
 
             {/* Details */}
 

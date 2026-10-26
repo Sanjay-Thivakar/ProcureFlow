@@ -1,11 +1,8 @@
 const RFQ = require("../models/rfq.model");
-const Product = require("../models/product.model");
 const Quotation = require("../models/quotation.model");
 
 const getRestaurantRFQs = async (req, res) => {
-
     try {
-
         if (req.user.role !== "restaurant") {
             return res.status(403).json({
                 success: false,
@@ -27,55 +24,36 @@ const getRestaurantRFQs = async (req, res) => {
 
         const rfqs = await RFQ.find({
             restaurant: req.user.id,
-        });
+        }).sort({ createdAt: -1 });
 
         const rfqsWithQuotations = await Promise.all(
-
             rfqs.map(async (rfq) => {
-
                 const quotations = await Quotation.find({
                     rfq: rfq._id,
-                })
-                    .populate("supplier", "name email");
+                }).populate("supplier", "name email");
 
                 return {
-
                     ...rfq.toObject(),
-
                     quotations,
-
                 };
-
             })
-
         );
 
         return res.status(200).json({
-
             success: true,
-
             rfqs: rfqsWithQuotations,
-
         });
 
     } catch (error) {
-
         return res.status(500).json({
-
             success: false,
-
             message: error.message,
-
         });
-
     }
-
 };
 
 const getRFQDetails = async (req, res) => {
-
     try {
-
         const now = new Date();
         await Quotation.updateMany(
             {
@@ -97,38 +75,59 @@ const getRFQDetails = async (req, res) => {
             });
         }
 
-        const quotations = await Quotation.find({
+        // Ownership and Role-Based Authorization
+        if (req.user.role === "restaurant") {
+            if (rfq.restaurant.toString() !== req.user.id) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Forbidden. You are not authorized to view this RFQ."
+                });
+            }
 
-            rfq: rfq._id
+            const quotations = await Quotation.find({
+                rfq: rfq._id
+            }).populate("supplier", "name email");
 
-        }).populate("supplier", "name email");
+            return res.status(200).json({
+                success: true,
+                rfq,
+                quotations
+            });
+        } else if (req.user.role === "supplier") {
+            // Suppliers can only view RFQs they are invited to, and ONLY see their own quotation
+            const supplierQuotations = await Quotation.find({
+                rfq: rfq._id,
+                supplier: req.user.id
+            }).populate("supplier", "name email");
 
-        return res.status(200).json({
+            if (supplierQuotations.length === 0) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Forbidden. You are not authorized to view this RFQ."
+                });
+            }
 
-            success: true,
-
-            rfq,
-
-            quotations
-
-        });
+            return res.status(200).json({
+                success: true,
+                rfq,
+                quotations: supplierQuotations
+            });
+        } else {
+            return res.status(403).json({
+                success: false,
+                message: "Forbidden. Invalid role."
+            });
+        }
 
     } catch (error) {
-
         return res.status(500).json({
-
             success: false,
-
             message: error.message
-
         });
-
     }
-
 };
 
 module.exports = {
-    
     getRestaurantRFQs,
     getRFQDetails,
-};  
+};

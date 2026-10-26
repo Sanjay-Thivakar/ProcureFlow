@@ -3,6 +3,7 @@ const Quotation = require("../models/quotation.model");
 const Product = require("../models/product.model");
 const Order = require("../models/order.model");
 const mongoose = require("mongoose");
+const { runInTransaction } = require("../utils/transaction");
 
 const syncExpiredQuotations = async (queryObject) => {
     const now = new Date();
@@ -346,71 +347,81 @@ const acceptQuotation = async (req, res) => {
             });
         }
 
-        // Accept selected quotation
-        quotation.status = "awarded";
+        const result = await runInTransaction(async (session) => {
+            const opts = session ? { session } : {};
 
-        await quotation.save();
+            // Atomically check RFQ is not already completed
+            const updatedRFQ = await RFQ.findOneAndUpdate(
+                { _id: quotation.rfq, status: { $ne: "completed" } },
+                { $set: { status: "completed" } },
+                { returnDocument: "after", ...opts }
+            );
 
-        // Create Order
-        const order = await Order.create({
+            if (!updatedRFQ) {
+                throw new Error("This RFQ has already been completed or awarded.");
+            }
 
-            rfq: quotation.rfq,
+            // Atomically award the quotation if still quoted
+            const updatedQuotation = await Quotation.findOneAndUpdate(
+                { _id: quotation._id, status: "quoted" },
+                { $set: { status: "awarded" } },
+                { returnDocument: "after", ...opts }
+            );
 
-            quotation: quotation._id,
+            if (!updatedQuotation) {
+                throw new Error("Quotation is no longer available to be awarded.");
+            }
 
-            restaurant: quotation.restaurant,
+            // Create Order
+            const [order] = await Order.create(
+                [
+                    {
+                        rfq: quotation.rfq,
+                        quotation: quotation._id,
+                        restaurant: quotation.restaurant,
+                        supplier: quotation.supplier,
+                        product: quotation.product,
+                        productName: quotation.productName,
+                        unit: quotation.unit,
+                        quantity: quotation.quantity,
+                        agreedPrice: quotation.quotedPrice,
+                        totalAmount: quotation.quantity * quotation.quotedPrice,
+                        estimatedDelivery: quotation.estimatedDelivery,
+                    }
+                ],
+                opts
+            );
 
-            supplier: quotation.supplier,
-
-            product: quotation.product,
-
-            productName: quotation.productName,
-
-            unit: quotation.unit,
-
-            quantity: quotation.quantity,
-
-            agreedPrice: quotation.quotedPrice,
-
-            totalAmount: quotation.quantity * quotation.quotedPrice,
-
-            estimatedDelivery: quotation.estimatedDelivery,
-
-        });
-
-        // Reject all other quotations for this RFQ
-        await Quotation.updateMany(
-            {
-                rfq: quotation.rfq,
-                _id: { $ne: quotation._id },
-                status: "quoted",
-            },
-            {
-                $set: {
-                    status: "rejected",
+            // Reject all other quotations for this RFQ
+            await Quotation.updateMany(
+                {
+                    rfq: quotation.rfq,
+                    _id: { $ne: quotation._id },
+                    status: "quoted",
                 },
-            }
-        );
+                {
+                    $set: {
+                        status: "rejected",
+                    },
+                },
+                opts
+            );
 
-        // Mark RFQ as completed
-        await RFQ.findByIdAndUpdate(
-            quotation.rfq,
-            {
-                status: "completed",
-            }
-        );
+            return { quotation: updatedQuotation, order };
+        });
 
         return res.status(200).json({
             success: true,
             message: "Supplier awarded successfully.",
-            quotation,
+            quotation: result.quotation,
+            order: result.order,
         });
 
     } catch (error) {
 
-        return res.status(500).json({
+        return res.status(400).json({
             success: false,
-            message: error.message,
+            message: error.message || "Failed to award quotation.",
         });
 
     }

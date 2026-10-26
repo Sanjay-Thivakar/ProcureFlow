@@ -1,4 +1,4 @@
-import { Plus, FilePlus2, Package, FileText, ClipboardList } from "lucide-react";
+import { Plus, FilePlus2, Package, FileText, ClipboardList, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import QuickActionCard from "./QuickActionCard";
@@ -23,6 +23,12 @@ const QuickActions = () => {
                             description="Create a new catalog item"
                             icon={Plus}
                             onClick={() => navigate("/products")}
+                        />
+                        <QuickActionCard
+                            title="Smart Replenishment"
+                            description="Monitor stockout risks & demand"
+                            icon={TrendingUp}
+                            onClick={() => navigate("/supplier/replenishment")}
                         />
                         <QuickActionCard
                             title="Incoming RFQs"

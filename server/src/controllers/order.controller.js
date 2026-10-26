@@ -1,323 +1,241 @@
 const Order = require("../models/order.model");
 const Product = require("../models/product.model");
+const { runInTransaction } = require("../utils/transaction");
 
 const getSupplierOrders = async (req, res) => {
-
     try {
-
-        // Only suppliers can view their orders
         if (req.user.role !== "supplier") {
-
             return res.status(403).json({
-
                 success: false,
-
                 message: "Only suppliers can view their orders."
-
             });
-
         }
 
         const orders = await Order.find({
-
             supplier: req.user.id,
-
         })
         .populate("restaurant", "name email")
-        .populate("product", "name category unit");
+        .populate("product", "name category unit")
+        .sort({ createdAt: -1 });
 
         return res.status(200).json({
-
             success: true,
-
             count: orders.length,
-
             orders,
-
         });
 
     } catch (error) {
-
         return res.status(500).json({
-
             success: false,
-
             message: error.message,
-
         });
-
     }
-
 };
 
 const acceptOrder = async (req, res) => {
-
     try {
-
-        // Only suppliers can accept orders
         if (req.user.role !== "supplier") {
-
             return res.status(403).json({
                 success: false,
                 message: "Only suppliers can accept orders."
             });
-
         }
 
-        // Find the order
         const order = await Order.findById(req.params.id);
 
         if (!order) {
-
             return res.status(404).json({
                 success: false,
                 message: "Order not found."
             });
-
         }
 
-        // Verify ownership
         if (order.supplier.toString() !== req.user.id) {
-
             return res.status(403).json({
                 success: false,
                 message: "Not authorized."
             });
-
         }
 
-        // Order must still be waiting
         if (order.orderStatus !== "pending_supplier_confirmation") {
-
             return res.status(400).json({
                 success: false,
                 message: "Order has already been processed."
             });
-
         }
 
-        // Find the product
-        const product = await Product.findById(order.product);
+        // Atomic stock deduction & status transition
+        const confirmedOrder = await runInTransaction(async (session) => {
+            const opts = session ? { session } : {};
 
-        if (!product) {
+            // Atomically check and deduct stock from product
+            const updatedProduct = await Product.findOneAndUpdate(
+                {
+                    _id: order.product,
+                    stock: { $gte: order.quantity },
+                },
+                {
+                    $inc: { stock: -order.quantity },
+                },
+                { returnDocument: "after", ...opts }
+            );
 
-            return res.status(404).json({
-                success: false,
-                message: "Product not found."
-            });
+            if (!updatedProduct) {
+                throw new Error("Insufficient stock available.");
+            }
 
-        }
+            // Atomically update order status
+            const updatedOrder = await Order.findOneAndUpdate(
+                {
+                    _id: order._id,
+                    orderStatus: "pending_supplier_confirmation",
+                },
+                {
+                    $set: { orderStatus: "confirmed" },
+                },
+                { returnDocument: "after", ...opts }
+            );
 
-        // Check inventory
-        if (product.stock < order.quantity) {
+            if (!updatedOrder) {
+                // If not in transaction mode, compensate by restoring product stock
+                if (!session) {
+                    await Product.findByIdAndUpdate(order.product, {
+                        $inc: { stock: order.quantity },
+                    });
+                }
+                throw new Error("Order has already been processed.");
+            }
 
-            return res.status(400).json({
-                success: false,
-                message: "Insufficient stock available."
-            });
-
-        }
-
-        // Deduct stock
-        product.stock -= order.quantity;
-
-        await product.save();
-
-        // Confirm order
-        order.orderStatus = "confirmed";
-
-        await order.save();
+            return updatedOrder;
+        });
 
         return res.status(200).json({
-
             success: true,
-
             message: "Order accepted successfully.",
-
-            order,
-
+            order: confirmedOrder,
         });
 
     } catch (error) {
-
-        return res.status(500).json({
-
+        return res.status(400).json({
             success: false,
-
-            message: error.message,
-
+            message: error.message || "Failed to accept order.",
         });
-
     }
-
 };
 
 const rejectOrder = async (req, res) => {
-
     try {
-
-        // Only suppliers can reject orders
         if (req.user.role !== "supplier") {
-
             return res.status(403).json({
                 success: false,
                 message: "Only suppliers can reject orders."
             });
-
         }
 
-        // Find order
         const order = await Order.findById(req.params.id);
 
         if (!order) {
-
             return res.status(404).json({
                 success: false,
                 message: "Order not found."
             });
-
         }
 
-        // Verify ownership
         if (order.supplier.toString() !== req.user.id) {
-
             return res.status(403).json({
                 success: false,
                 message: "Not authorized."
             });
-
         }
 
-        // Only pending orders can be rejected
         if (order.orderStatus !== "pending_supplier_confirmation") {
-
             return res.status(400).json({
                 success: false,
                 message: "Order has already been processed."
             });
-
         }
 
-        // Reject order
         order.orderStatus = "rejected";
-
         await order.save();
 
         return res.status(200).json({
-
             success: true,
-
             message: "Order rejected successfully.",
-
             order,
-
         });
 
     } catch (error) {
-
         return res.status(500).json({
-
             success: false,
-
             message: error.message,
-
         });
-
     }
-
 };
 
 const updateOrderStatus = async (req, res) => {
-
     try {
-
         if (req.user.role !== "supplier") {
-
             return res.status(403).json({
                 success: false,
                 message: "Only suppliers can update order status."
             });
-
         }
 
         const order = await Order.findById(req.params.id);
 
         if (!order) {
-
             return res.status(404).json({
                 success: false,
                 message: "Order not found."
             });
-
         }
 
         if (order.supplier.toString() !== req.user.id) {
-
             return res.status(403).json({
                 success: false,
                 message: "Not authorized."
             });
-
         }
 
         const { orderStatus } = req.body;
 
         const validTransitions = {
-
             confirmed: ["preparing"],
-
             preparing: ["out_for_delivery"],
-
             out_for_delivery: ["delivered"],
-
         };
 
-        const allowedStatuses =
-            validTransitions[order.orderStatus] || [];
+        const allowedStatuses = validTransitions[order.orderStatus] || [];
 
         if (!allowedStatuses.includes(orderStatus)) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message: `Cannot change status from ${order.orderStatus} to ${orderStatus}.`
-
             });
-
         }
 
         order.orderStatus = orderStatus;
-
+        if (orderStatus === "delivered" && !order.deliveredAt) {
+            order.deliveredAt = new Date();
+        }
         await order.save();
 
         return res.status(200).json({
-
             success: true,
-
             message: "Order status updated successfully.",
-
             order,
-
         });
 
     } catch (error) {
-
         return res.status(500).json({
-
             success: false,
-
             message: error.message,
-
         });
-
     }
-
 };
 
 const getRestaurantOrders = async (req, res) => {
     try {
-
         if (req.user.role !== "restaurant") {
             return res.status(403).json({
                 success: false,
@@ -328,27 +246,26 @@ const getRestaurantOrders = async (req, res) => {
         const orders = await Order.find({
             restaurant: req.user.id,
         })
-            .populate("supplier", "name")
-            .populate("restaurant", "name")
+            .populate("supplier", "name email")
+            .populate("restaurant", "name email")
+            .populate("product", "name category unit")
             .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
+            count: orders.length,
             orders,
         });
 
     } catch (error) {
-
         return res.status(500).json({
             success: false,
             message: error.message,
         });
-
     }
 };
 
 module.exports = {
-
     getSupplierOrders,
     acceptOrder,
     rejectOrder,

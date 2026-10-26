@@ -9,8 +9,8 @@ import RFQResponsesModal from "../../components/rfq/RFQResponsesModal";
 import EmptyState from "../../components/ui/EmptyState";
 import Loader from "../../components/common/Loader";
 
-import { getRestaurantRFQs } from "../../services/rfqService";
-import { getRFQDetails } from "../../services/rfqService";
+import { getRestaurantRFQs, getRFQDetails } from "../../services/rfqService";
+import { getPrioritizedRFQs } from "../../services/procurementRankingService";
 
 
 const MyQuotation = () => {
@@ -27,35 +27,32 @@ const MyQuotation = () => {
 
     const fetchRFQs = async () => {
         try {
-
-            const response = await getRestaurantRFQs();
-
-            setRFQs(response.rfqs);
-
-            if (selectedRFQ) {
-
-                const updated = response.rfqs.find(
-                    rfq => rfq._id === selectedRFQ._id
-                );
-
-                if (updated) {
-
-                    setSelectedRFQ(updated);
-
-                }
-
+            // Fetch prioritized RFQs (with priority scores, deadlines, and reasons)
+            let rfqList = [];
+            try {
+                const response = await getPrioritizedRFQs();
+                rfqList = response.data || [];
+            } catch (err) {
+                const fallbackRes = await getRestaurantRFQs();
+                rfqList = fallbackRes.rfqs || [];
             }
 
+            setRFQs(rfqList);
+
+            if (selectedRFQ) {
+                const updated = rfqList.find(
+                    rfq => rfq._id === selectedRFQ._id
+                );
+                if (updated) {
+                    setSelectedRFQ(updated);
+                }
+            }
         } catch (error) {
-
             toast.error(
-                error.response?.data?.message || "Failed to load quotations."
+                error.response?.data?.message || "Failed to load RFQs."
             );
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
@@ -113,6 +110,10 @@ const MyQuotation = () => {
                 (!q.validUntil || new Date(q.validUntil) >= new Date())
         );
 
+        if (activeFilter === "urgent") {
+            return rfq.priority === "Urgent";
+        }
+
         if (activeFilter === "review") {
             return rfq.status === "open" && hasActiveQuoted;
         }
@@ -133,13 +134,13 @@ const MyQuotation = () => {
         switch (activeFilter) {
             case "review":
                 return {
-                    title: "No quotes to review",
+                    title: "No RFQs to review",
                     description: "There are currently no active supplier bids awaiting your review.",
                     icon: ClipboardCheck,
                 };
             case "waiting":
                 return {
-                    title: "No pending requests",
+                    title: "No pending RFQs",
                     description: "There are currently no RFQs waiting for supplier responses.",
                     icon: Clock3,
                 };
@@ -174,10 +175,10 @@ const MyQuotation = () => {
 
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-slate-800">
-                        My Quotations
+                        My RFQs
                     </h1>
                     <p className="mt-2 text-slate-500">
-                        Track and review quotations received for your RFQs.
+                        Track your procurement requests, supplier responses, and priorities.
                     </p>
                 </div>
 
@@ -191,8 +192,21 @@ const MyQuotation = () => {
                                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
                     >
-                        All ({rfqs.length})
+                        All RFQs ({rfqs.length})
                     </button>
+
+                    {rfqs.some(r => r.priority === "Urgent") && (
+                        <button
+                            onClick={() => setActiveFilter("urgent")}
+                            className={`px-5 py-2.5 rounded-full text-sm font-semibold transition ${
+                                activeFilter === "urgent"
+                                    ? "bg-rose-600 text-white"
+                                    : "bg-rose-100 text-rose-700 hover:bg-rose-200"
+                            }`}
+                        >
+                            Urgent ({rfqs.filter(r => r.priority === "Urgent").length})
+                        </button>
+                    )}
 
                     <button
                         onClick={() => setActiveFilter("review")}
@@ -221,7 +235,7 @@ const MyQuotation = () => {
                                 : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                         }`}
                     >
-                        Waiting (
+                        Awaiting Responses (
                         {rfqs.filter(r =>
                             r.status === "open" &&
                             r.quotations.some(q => q.status === "pending") &&

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { PackageSearch } from "lucide-react";
 
@@ -9,16 +10,21 @@ import EmptyState from "../../components/ui/EmptyState";
 
 import { getProducts } from "../../services/productService";
 import { createRFQ } from "../../services/rfqService";
+import ProductRecommendations from "../../components/recommendations/ProductRecommendations";
 
 
 const BrowseProducts = () => {
+
+    const [searchParams] = useSearchParams();
+    const initialSearch = searchParams.get("search") || "";
+    const prefillQty = searchParams.get("qty") || "";
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [isRFQModalOpen, setIsRFQModalOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState(initialSearch);
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [sortBy, setSortBy] = useState("default");
 
@@ -157,6 +163,36 @@ const BrowseProducts = () => {
 
     };
 
+    const handleSelectRecommendation = (recommendedProduct) => {
+        if (selectedProducts.length === 0) {
+            setSelectedProducts([recommendedProduct]);
+            return;
+        }
+
+        const isAlreadySelected = selectedProducts.some(
+            (p) => p._id === recommendedProduct._id
+        );
+        if (isAlreadySelected) {
+            toast("This product listing is already in your selection.", { icon: "ℹ️" });
+            return;
+        }
+
+        // If from the same item, add to comparison
+        if (selectedProducts[0].name.toLowerCase() === recommendedProduct.name.toLowerCase()) {
+            setSelectedProducts((prev) => [...prev, recommendedProduct]);
+        } else {
+            // Focus RFQ workflow onto this recommended product
+            setSelectedProducts([recommendedProduct]);
+            toast.success(`Switched RFQ focus to ${recommendedProduct.name}!`);
+        }
+    };
+
+    const handleFilterToProduct = (productName) => {
+        setSearchTerm(productName);
+        setSelectedCategory("All");
+        toast(`Viewing supplier listings for "${productName}"`, { icon: "🔍" });
+    };
+
     return (
         <RestaurantLayout>
 
@@ -264,6 +300,15 @@ const BrowseProducts = () => {
                     </div>
 
                 </div>
+
+                {/* Smart Product Recommendation Section */}
+                <ProductRecommendations
+                    activeProduct={selectedProducts[0] || null}
+                    searchTerm={searchTerm}
+                    selectedProducts={selectedProducts}
+                    onSelectProduct={handleSelectRecommendation}
+                    onFilterToProduct={handleFilterToProduct}
+                />
 
                 <div className="flex justify-between items-center bg-white border border-slate-200 rounded-2xl p-5 mb-8">
 
@@ -376,6 +421,7 @@ const BrowseProducts = () => {
                 onClose={() => setIsRFQModalOpen(false)}
                 onSubmit={handleCreateRFQ}
                 selectedCount={selectedProducts.length}
+                initialQuantity={prefillQty}
             />
         </RestaurantLayout>
 

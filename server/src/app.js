@@ -1,6 +1,5 @@
-
-
-const express = require("express"); // loads express from the express library
+require("dotenv").config();
+const express = require("express");
 const cors = require("cors");
 const app = express(); // creates the  express application
 
@@ -24,6 +23,9 @@ const quotationRoutes = require("./routes/quotation.routes");
 const rfqRoutes = require("./routes/rfq.routes");
 const orderRoutes = require("./routes/order.routes");
 const paymentRoutes = require("./routes/payment.routes");
+const recommendationRoutes = require("./routes/productRecommendation.routes");
+const rankingRoutes = require("./routes/procurementRanking.routes");
+const replenishmentRoutes = require("./routes/smartReplenishment.routes");
 
 
 app.use("/api", testRoutes);
@@ -33,5 +35,8 @@ app.use("/api/quotations", quotationRoutes);
 app.use("/api/rfqs", rfqRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/recommendations", recommendationRoutes);
+app.use("/api/rankings", rankingRoutes);
+app.use("/api/replenishment", replenishmentRoutes);
 
 module.exports = app;

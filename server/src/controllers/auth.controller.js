@@ -31,9 +31,6 @@ const register = async (req, res) => {
       role,
     });
 
-    console.log(user);
-
-
     res.status(201).json({
       success: true,
       message: "User Registered Successfully",
@@ -41,7 +38,7 @@ const register = async (req, res) => {
 
   } 
   catch (error) {
-    console.error("Registration Error:", error);
+    console.error("Registration Error:", error.message);
 
     res.status(500).json({
         success: false,

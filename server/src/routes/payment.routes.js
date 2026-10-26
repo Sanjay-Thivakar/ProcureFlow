@@ -7,12 +7,13 @@ const {
     verifyPayment,
 } = require("../controllers/payment.controller");
 
-const { protect } = require("../middleware/auth.middleware");
+const { protect, authorize } = require("../middleware/auth.middleware");
 
 // Create Razorpay order
 router.post(
     "/:id/create",
     protect,
+    authorize("restaurant"),
     createPaymentOrder
 );
 
@@ -20,6 +21,7 @@ router.post(
 router.post(
     "/verify",
     protect,
+    authorize("restaurant"),
     verifyPayment
 );
 

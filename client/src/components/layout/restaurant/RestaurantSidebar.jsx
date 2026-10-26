@@ -21,11 +21,10 @@ const RestaurantSidebar = () => {
             icon: PackageSearch,
         },
         {
-            name: "My Quotations",
+            name: "My RFQs",
             path: "/restaurant/rfqs",
             icon: FileText,
         },
-
         {
             name: "Orders",
             path: "/restaurant/orders",
@@ -39,7 +38,7 @@ const RestaurantSidebar = () => {
     ];
 
     return (
-        <aside className="flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
+        <aside className="sticky top-0 flex h-screen w-64 flex-shrink-0 flex-col border-r border-slate-200 bg-white z-20">
 
             <div className="border-b border-slate-200 p-6">
                 <h1 className="text-2xl font-bold">
@@ -47,7 +46,7 @@ const RestaurantSidebar = () => {
                 </h1>
             </div>
 
-            <nav className="flex-1 space-y-2 p-4">
+            <nav className="flex-1 space-y-2 p-4 overflow-y-auto">
 
                 {navItems.map((item) => {
 
